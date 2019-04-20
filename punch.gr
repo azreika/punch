@@ -1,0 +1,65 @@
+program
+    : (funcdecl | assignment)* EOF
+    ;
+
+funcdecl
+    : FUNC IDENT LPAREN arglist RPAREN LBRACE (stmt)* RBRACE
+    ;
+
+stmt
+    : assignment SEMICOLON
+    | expr SEMICOLON
+    | loop
+    | conditional
+    | LBRACE (stmt)* RBRACE
+    ;
+
+conditional
+    : IF LPAREN condition RPAREN stmt (ELSE IF LPAREN condition RPAREN stmt)* (ELSE stmt)?
+    ;
+
+condition
+    : conjunction (|| conjunction)*
+    ;
+
+conjunction
+    : unary (&& unary)*
+    ;
+
+unary
+    : NEG conditional
+    | LPAREN conditional UNARY
+    ;
+
+loop
+    : FOR LPAREN (assignment | expr) SEMICOLON condition SEMICOLON (assignment | expr) RPAREN LBRACE (stmt)* RBRACE
+    | WHILE LPAREN condition RPAREN LBRACE (stmt)* RBRACE
+    ;
+
+expr
+    : DOLLAR LPAREN bash RPAREN
+    | RAW LBRACE bash RBRACE
+    | term ((PLUS | MINUS) term)*
+    ;
+
+term
+    : factor ((STAR | SLASH) factor)*
+    ;
+
+factor
+    : LPAREN expr RPAREN
+    | NUMBER
+    | STRING
+    | IDENT
+    | IDENT LPAREN arglist RPAREN
+    ;
+
+assignment
+    : VAR IDENT EQUALS expr
+    | IDENT EQUALS expr
+    ;
+
+arglist
+    : (IDENT COMMA)* IDENT
+    | %empty
+    ;
