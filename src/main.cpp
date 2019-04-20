@@ -1,12 +1,10 @@
 #include "Scanner.h"
 
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <sstream>
 
-void printUsage() {
-    std::cout << "Usage: punch <FILE>" << std::endl;
-}
+void printUsage() { std::cout << "Usage: punch <FILE>" << std::endl; }
 
 void compileProgram(std::string filename, std::ostream& out) {
     out << "#!/bin/bash" << std::endl;

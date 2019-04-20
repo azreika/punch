@@ -3,21 +3,36 @@
 
 enum class TokenType {
     // separators
-    LPAREN, RPAREN,
-    LBRACE, RBRACE,
+    LPAREN,
+    RPAREN,
+    LBRACE,
+    RBRACE,
     SEMICOLON,
 
     // keywords
     FUNC,
-    IF, ELSE,
-    FOR, WHILE,
-    DOLLAR, RAW,
-    VAR, EQUAL,
+    IF,
+    ELSE,
+    FOR,
+    WHILE,
+    DOLLAR,
+    RAW,
+    VAR,
+    EQUAL,
 
     // operators
-    LOR, LAND, LNOT,
-    PLUS, MINUS, STAR, SLASH,
-    LEQ, GEQ, EQUALEQUAL, LESSTHAN, GREATERTHAN,
+    LOR,
+    LAND,
+    LNOT,
+    PLUS,
+    MINUS,
+    STAR,
+    SLASH,
+    LEQ,
+    GEQ,
+    EQUALEQUAL,
+    LESSTHAN,
+    GREATERTHAN,
 
     // literals
     IDENT,
@@ -34,21 +49,17 @@ public:
 
     Token(TokenType type) : type(type), numberLiteral({}), stringLiteral({}) {}
 
-    Token(TokenType type, int numberLiteral) : type(type), numberLiteral(numberLiteral), stringLiteral({}) {}
+    Token(TokenType type, int numberLiteral)
+        : type(type), numberLiteral(numberLiteral), stringLiteral({}) {}
 
-    Token(TokenType type, std::string stringLiteral) : type(type), numberLiteral({}), stringLiteral(stringLiteral) {}
+    Token(TokenType type, std::string stringLiteral)
+        : type(type), numberLiteral({}), stringLiteral(stringLiteral) {}
 
-    bool isLiteral() const {
-        return isNumberLiteral() || isStringLiteral();
-    }
+    bool isLiteral() const { return isNumberLiteral() || isStringLiteral(); }
 
-    bool isNumberLiteral() const {
-        return numberLiteral;
-    }
+    bool isNumberLiteral() const { return numberLiteral; }
 
-    bool isStringLiteral() const {
-        return stringLiteral;
-    }
+    bool isStringLiteral() const { return stringLiteral; }
 
     int getNumber() const {
         assert(numberLiteral && "token does not contain number literal");

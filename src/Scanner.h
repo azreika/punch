@@ -1,5 +1,3 @@
 #include "Token.h"
 
-class Scanner {
-
-};
+class Scanner {};
