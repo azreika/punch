@@ -1,5 +1,5 @@
 CC=g++
-CPPFLAGS=-Wall -Werror -std=c++11
+CPPFLAGS=-Wall -Werror -std=c++17
 TARGET=punch
 
 .PHONY: all clean
@@ -10,8 +10,11 @@ clean:
 	rm -f *.o
 	rm -f $(TARGET)
 
-main.o: main.cpp
-	$(CC) -c $(CPPFLAGS) $^ -o $@
+Scanner.o: Scanner.cpp Scanner.h Token.h
+	$(CC) -c $(CPPFLAGS) $< -o $@
 
-punch: main.o
+main.o: main.cpp
+	$(CC) -c $(CPPFLAGS) $< -o $@
+
+punch: main.o Scanner.o
 	$(CC) $(CPPFLAGS) $^ -o $@

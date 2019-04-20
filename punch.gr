@@ -1,5 +1,5 @@
 program
-    : (funcdecl | assignment)* EOF
+    : (funcdecl | assignment)* END
     ;
 
 funcdecl
@@ -19,16 +19,17 @@ conditional
     ;
 
 condition
-    : conjunction (|| conjunction)*
+    : conjunction (LOR conjunction)*
     ;
 
 conjunction
-    : unary (&& unary)*
+    : unary (LAND unary)*
     ;
 
 unary
-    : NEG conditional
-    | LPAREN conditional UNARY
+    : LNOT conditional
+    | LPAREN conditional RPAREN
+    | expr (LEQ | GEQ | EQUALEQUAL | LESSTHAN | GREATERTHAN) expr
     ;
 
 loop
@@ -48,6 +49,7 @@ term
 
 factor
     : LPAREN expr RPAREN
+    | MINUS expr
     | NUMBER
     | STRING
     | IDENT
@@ -55,7 +57,7 @@ factor
     ;
 
 assignment
-    : VAR IDENT EQUALS expr
+    : VAR IDENT EQUAL expr
     | IDENT EQUALS expr
     ;
 

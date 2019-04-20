@@ -1,3 +1,5 @@
+#include "Scanner.h"
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -21,7 +23,7 @@ int main(int argc, char** argv) {
     std::stringstream result;
     compileProgram(argv[1], result);
 
-    std::string outputFilename = "out.sh";
+    std::string outputFilename = "./out/out.sh";
     std::ofstream outputFile(outputFilename);
     outputFile << result.str();
     std::cout << result.str();
