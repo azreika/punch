@@ -11,6 +11,8 @@ enum class TokenType {
     RPAREN,
     LBRACE,
     RBRACE,
+    LBRACKET,
+    RBRACKET,
     SEMICOLON,
 
     // keywords
@@ -35,6 +37,7 @@ enum class TokenType {
     LEQ,
     GEQ,
     EQUALEQUAL,
+    NOTEQUAL,
     LESSTHAN,
     GREATERTHAN,
 
@@ -54,6 +57,8 @@ inline std::string getSymbolForTokenType(TokenType type) {
         case TokenType::RPAREN: return ")";
         case TokenType::LBRACE: return "{";
         case TokenType::RBRACE: return "}";
+        case TokenType::LBRACKET: return "[";
+        case TokenType::RBRACKET: return "]";
         case TokenType::SEMICOLON: return ";";
 
         // keywords
@@ -78,6 +83,7 @@ inline std::string getSymbolForTokenType(TokenType type) {
         case TokenType::LEQ: return "<=";
         case TokenType::GEQ: return ">=";
         case TokenType::EQUALEQUAL: return "==";
+        case TokenType::NOTEQUAL: return "!=";
         case TokenType::LESSTHAN: return "<";
         case TokenType::GREATERTHAN: return ">";
 

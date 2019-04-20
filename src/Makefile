@@ -1,5 +1,5 @@
 CC=g++
-CPPFLAGS=-Wall -Werror -std=c++17
+CPPFLAGS=-g -Wall -Werror -std=c++17
 TARGET=punch
 
 .PHONY: all clean
