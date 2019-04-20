@@ -1,3 +1,4 @@
+#include <cassert>
 #include <optional>
 #include <string>
 
@@ -57,18 +58,18 @@ public:
 
     bool isLiteral() const { return isNumberLiteral() || isStringLiteral(); }
 
-    bool isNumberLiteral() const { return numberLiteral; }
+    bool isNumberLiteral() const { return numberLiteral.has_value(); }
 
-    bool isStringLiteral() const { return stringLiteral; }
+    bool isStringLiteral() const { return stringLiteral.has_value(); }
 
     int getNumber() const {
-        assert(numberLiteral && "token does not contain number literal");
-        return numberLiteral;
+        assert(isNumberLiteral() && "token does not contain number literal");
+        return numberLiteral.value();
     }
 
     std::string getString() const {
-        assert(stringLiteral && "token does not contain string literal");
-        return stringLiteral;
+        assert(isStringLiteral() && "token does not contain string literal");
+        return stringLiteral.value();
     }
 
 private:
