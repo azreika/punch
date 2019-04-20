@@ -6,4 +6,6 @@ TabWidth: 4
 UseTab: Never
 PointerAlignment: Left
 DerivePointerAlignment: false
+AllowShortCaseLabelsOnASingleLine: true
+IndentCaseLabels: true
 ...
