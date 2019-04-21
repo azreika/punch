@@ -64,6 +64,7 @@ void Scanner::scanToken() {
         // complex tokens
         case '"': scanString(); break;
         case '$': {
+            addToken(TokenType::DOLLAR);
             scanRawEnvironment('(', ')');
             break;
         }
@@ -86,7 +87,8 @@ void Scanner::scanString() {
     }
     advance();
 
-    std::string result = source.substr(currTokenStart+1, idx-currTokenStart-1);
+    std::string result =
+        source.substr(currTokenStart + 1, idx - currTokenStart - 1);
     std::cout << result << std::endl;
     addToken(TokenType::STRING, result);
 }
@@ -112,6 +114,7 @@ void Scanner::scanIdentifier() {
     } else if (result == "$") {
         addToken(TokenType::DOLLAR);
     } else if (result == "raw") {
+        addToken(TokenType::RAW);
         scanRawEnvironment('{', '}');
     } else {
         addToken(TokenType::IDENT, result);
@@ -128,33 +131,57 @@ void Scanner::scanNumber() {
     addToken(TokenType::NUMBER, number);
 }
 
-void Scanner::scanComment() {
-    assert(false && "unimplemented");
-}
+void Scanner::scanComment() { assert(false && "unimplemented"); }
 
 void Scanner::scanRawEnvironment(char start, char end) {
     while (hasNext() && peek() != start) {
         advance();
     }
-    advance();
+    assert(advance() == start && "expected start symbol");
+
+    switch (start) {
+        case '{': addToken(TokenType::LBRACE); break;
+        case '(': addToken(TokenType::LPAREN); break;
+        default: assert(false && "unexpected start of raw environment");
+    }
+
     int startIdx = idx;
 
     int nestingLevel = 1;
     while (hasNext()) {
-        if (peek() == start) {
+        char chr = advance();
+        if (chr == start) {
             nestingLevel++;
-        } else if (peek() == end) {
+        } else if (chr == end) {
             nestingLevel--;
             if (nestingLevel == 0) {
-                advance();
                 break;
             }
+        } else if (chr == '$' && match('[')) {
+            std::string result = source.substr(startIdx, idx - startIdx - 2);
+            addToken(TokenType::RAWEXPR, result);
+
+            addToken(TokenType::DOLLAR);
+            addToken(TokenType::LBRACKET);
+
+            Token* token = &tokens[tokens.size() - 1];
+            while (token->type != TokenType::RBRACKET) {
+                currTokenStart = idx;
+                scanToken();
+                token = &tokens[tokens.size() - 1];
+            }
+
+            startIdx = idx;
         }
-        advance();
     }
 
     std::string result = source.substr(startIdx, idx - startIdx - 1);
-    addToken(TokenType::RAW, result);
+    addToken(TokenType::RAWEXPR, result);
+    switch (end) {
+        case '}': addToken(TokenType::RBRACE); break;
+        case ')': addToken(TokenType::RPAREN); break;
+        default: assert(false && "unexpected end of raw environment");
+    }
 }
 
 void Scanner::run() {

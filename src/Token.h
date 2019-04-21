@@ -45,6 +45,7 @@ enum class TokenType {
     IDENT,
     NUMBER,
     STRING,
+    RAWEXPR,
 
     // EOF
     END,
@@ -91,6 +92,7 @@ inline std::string getSymbolForTokenType(TokenType type) {
         case TokenType::IDENT: return "IDENT";
         case TokenType::NUMBER: return "NUMBER";
         case TokenType::STRING: return "STRING";
+        case TokenType::RAWEXPR: return "RAWEXPR";
 
         // EOF
         case TokenType::END: return "EOF";

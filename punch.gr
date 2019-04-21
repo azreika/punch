@@ -43,6 +43,9 @@ expr
     | term ((PLUS | MINUS) term)*
     ;
 
+bash
+    : (RAWEXPR)* (DOLLAR LBRACKET expr RBRACKET (RAWEXPR)*)*
+
 term
     : factor ((STAR | SLASH) factor)*
     ;

@@ -62,16 +62,13 @@ private:
 
     void addToken(TokenType type) {
         tokens.push_back(Token(type));
-        std::cout << tokens[tokens.size() - 1] << std::endl;
     }
 
     void addToken(TokenType type, std::string stringLiteral) {
         tokens.push_back(Token(type, stringLiteral));
-        std::cout << tokens[tokens.size() - 1] << std::endl;
     }
 
     void addToken(TokenType type, int numberLiteral) {
         tokens.push_back(Token(type, numberLiteral));
-        std::cout << tokens[tokens.size() - 1] << std::endl;
     }
 };
