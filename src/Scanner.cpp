@@ -5,6 +5,7 @@
 
 void Scanner::scanToken() {
     char chr = advance();
+
     switch (chr) {
         // whitespace
         case ' ':
@@ -82,23 +83,30 @@ void Scanner::scanToken() {
 }
 
 void Scanner::scanString() {
+    // keep going until we hit the end of the string
     while (hasNext() && peek() != '"') {
         advance();
     }
+
+    // read in the final '"' character
     advance();
 
+    // the string is everything except the surrounding '"' characters
     std::string result =
         source.substr(currTokenStart + 1, idx - currTokenStart - 1);
-    std::cout << result << std::endl;
     addToken(TokenType::STRING, result);
 }
 
 void Scanner::scanIdentifier() {
+    // keep reading in contiguous alphanumeric characters
+    // TODO: check that isalnum is what is expected
     while (hasNext() && isalnum(peek())) {
         advance();
     }
 
     std::string result = source.substr(currTokenStart, idx - currTokenStart);
+
+    // match with a keyword if possible
     if (result == "var") {
         addToken(TokenType::VAR);
     } else if (result == "func") {
@@ -117,11 +125,13 @@ void Scanner::scanIdentifier() {
         addToken(TokenType::RAW);
         scanRawEnvironment('{', '}');
     } else {
+        // otherwise, it is an identifier
         addToken(TokenType::IDENT, result);
     }
 }
 
 void Scanner::scanNumber() {
+    // keep reading in all digits
     while (hasNext() && isdigit(peek())) {
         advance();
     }
@@ -131,14 +141,19 @@ void Scanner::scanNumber() {
     addToken(TokenType::NUMBER, number);
 }
 
-void Scanner::scanComment() { assert(false && "unimplemented"); }
+void Scanner::scanComment() {
+    // TODO: implement this
+    assert(false && "unimplemented");
+}
 
 void Scanner::scanRawEnvironment(char start, char end) {
+    // TODO: currently ignoring everything until start character; fix this
     while (hasNext() && peek() != start) {
         advance();
     }
     assert(advance() == start && "expected start symbol");
 
+    // add the start token
     switch (start) {
         case '{': addToken(TokenType::LBRACE); break;
         case '(': addToken(TokenType::LPAREN); break;
@@ -146,8 +161,8 @@ void Scanner::scanRawEnvironment(char start, char end) {
     }
 
     int startIdx = idx;
-
     int nestingLevel = 1;
+
     while (hasNext()) {
         char chr = advance();
         if (chr == start) {
@@ -155,15 +170,23 @@ void Scanner::scanRawEnvironment(char start, char end) {
         } else if (chr == end) {
             nestingLevel--;
             if (nestingLevel == 0) {
+                // finished with the raw environment!
                 break;
             }
         } else if (chr == '$' && match('[')) {
+            // hit a nested punch expression!
+
+            // add everything read so far as a block of raw expressions
+            // '$[' should be removed
             std::string result = source.substr(startIdx, idx - startIdx - 2);
             addToken(TokenType::RAWEXPR, result);
 
+            // add in the '$[' tokens
             addToken(TokenType::DOLLAR);
             addToken(TokenType::LBRACKET);
 
+            // keep scanning in tokens as if in a regular punch environment,
+            // until the nested expression is terminated (with a ']')
             Token* token = &tokens[tokens.size() - 1];
             while (token->type != TokenType::RBRACKET) {
                 currTokenStart = idx;
@@ -171,24 +194,20 @@ void Scanner::scanRawEnvironment(char start, char end) {
                 token = &tokens[tokens.size() - 1];
             }
 
+            // raw block now starts from current index
             startIdx = idx;
         }
     }
 
+    // add in the final raw expression block
+    // end character should be ignored
     std::string result = source.substr(startIdx, idx - startIdx - 1);
     addToken(TokenType::RAWEXPR, result);
+
+    // add in the end token
     switch (end) {
         case '}': addToken(TokenType::RBRACE); break;
         case ')': addToken(TokenType::RPAREN); break;
         default: assert(false && "unexpected end of raw environment");
     }
-}
-
-void Scanner::run() {
-    assert(tokens.empty() && "scanner has already been run");
-    while (hasNext()) {
-        currTokenStart = idx;
-        scanToken();
-    }
-    addToken(TokenType::END);
 }
