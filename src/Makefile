@@ -13,7 +13,7 @@ clean:
 Scanner.o: Scanner.cpp Scanner.h Token.h
 	$(CC) -c $(CPPFLAGS) $< -o $@
 
-main.o: main.cpp
+main.o: main.cpp Token.h
 	$(CC) -c $(CPPFLAGS) $< -o $@
 
 punch: main.o Scanner.o
