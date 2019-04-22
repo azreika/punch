@@ -10,7 +10,7 @@ clean:
 	rm -f *.o
 	rm -f $(TARGET)
 
-Parser.o: Parser.cpp Parser.h Token.h
+Parser.o: Parser.cpp Parser.h Token.h AstNode.h
 	$(CC) -c $(CPPFLAGS) $< -o $@
 
 Scanner.o: Scanner.cpp Scanner.h Token.h

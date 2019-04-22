@@ -1,3 +1,4 @@
+#include "Parser.h"
 #include "Scanner.h"
 #include "Token.h"
 
@@ -24,7 +25,9 @@ void compileProgram(std::string filename, std::ostream& out) {
     // run the parser
     out << std::endl;
     out << " --- parser --- " << std::endl;
-    out << "TODO..." << std::endl;
+    Parser parser(scanner.getTokens());
+    AstNode* program = parser.parse();
+    out << *program;
 
     // write result to out
     out << std::endl;
