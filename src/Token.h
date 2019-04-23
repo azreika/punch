@@ -122,12 +122,12 @@ public:
 
     bool isStringLiteral() const { return stringLiteral.has_value(); }
 
-    int getNumber() const {
+    int getNumberLiteral() const {
         assert(isNumberLiteral() && "token does not contain number literal");
         return numberLiteral.value();
     }
 
-    std::string getString() const {
+    std::string getStringLiteral() const {
         assert(isStringLiteral() && "token does not contain string literal");
         return stringLiteral.value();
     }
@@ -135,10 +135,10 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const Token& token) {
         os << getSymbolForTokenType(token.type);
         if (token.isStringLiteral()) {
-            os << "(" << token.getString() << ")";
+            os << "(" << token.getStringLiteral() << ")";
         }
         if (token.isNumberLiteral()) {
-            os << "(" << token.getNumber() << ")";
+            os << "(" << token.getNumberLiteral() << ")";
         }
         return os;
     }
