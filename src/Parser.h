@@ -32,7 +32,14 @@ private:
     const std::vector<Token>& tokens;
 
     AstProgram* parseProgram();
+
+    AstAssignment* parseAssignment();
+
     AstExpression* parseExpression();
     AstExpression* parseTerm();
     AstExpression* parseFactor();
+
+    AstFunction* parseFunction();
+
+    AstStatement* parseStatement();
 };

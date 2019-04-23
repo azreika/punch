@@ -14,6 +14,7 @@ enum class TokenType {
     LBRACKET,
     RBRACKET,
     SEMICOLON,
+    COMMA,
 
     // keywords
     FUNC,
@@ -61,6 +62,7 @@ inline std::string getSymbolForTokenType(TokenType type) {
         case TokenType::LBRACKET: return "[";
         case TokenType::RBRACKET: return "]";
         case TokenType::SEMICOLON: return ";";
+        case TokenType::COMMA: return ",";
 
         // keywords
         case TokenType::FUNC: return "FUNC";

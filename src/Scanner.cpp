@@ -25,6 +25,7 @@ void Scanner::scanToken() {
         case '*': addToken(TokenType::STAR); break;
         case '[': addToken(TokenType::LBRACKET); break;
         case ']': addToken(TokenType::RBRACKET); break;
+        case ',': addToken(TokenType::COMMA); break;
 
         // possibly multi-character simple tokens
         case '=': {
