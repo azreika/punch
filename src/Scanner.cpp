@@ -1,4 +1,5 @@
 #include "Scanner.h"
+#include "PunchException.h"
 #include "Token.h"
 
 #include <vector>
@@ -76,11 +77,14 @@ void Scanner::scanToken() {
             } else if (isalpha(chr)) {
                 scanIdentifier();
             } else {
-                assert(false && "unexpected character during token scan");
+                // unexpected character
+                PunchException::handleException(ScannerException(chr));
             }
         }
     }
 }
+
+// TODO: handle underscores as part of identifiers, etc.
 
 void Scanner::scanString() {
     // keep going until we hit the end of the string
