@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <memory>
+#include <vector>
 
 class AstStatement : public AstNode {};
 
@@ -77,4 +78,55 @@ public:
 
 private:
     std::string string;
+};
+
+class AstRawExpression : public AstExpression {};
+
+class AstRawBashExpression : public AstRawExpression {
+public:
+    AstRawBashExpression(std::string expr) : expr(expr) {}
+
+    void print(std::ostream& os) const override { os << expr; }
+
+private:
+    std::string expr;
+};
+
+class AstRawPunchExpression : public AstRawExpression {
+public:
+    AstRawPunchExpression(std::unique_ptr<AstExpression> expr)
+        : expr(std::move(expr)) {}
+
+    void print(std::ostream& os) const override {
+        os << "$[";
+        expr->print(os);
+        os << "]";
+    }
+
+private:
+    std::unique_ptr<AstExpression> expr;
+};
+
+class AstRawEnvironment : public AstExpression {
+public:
+    AstRawEnvironment() : expressions({}) {}
+
+    AstRawEnvironment(
+        std::vector<std::unique_ptr<AstRawExpression>> expressions)
+        : expressions(std::move(expressions)) {}
+
+    void addRawExpression(std::unique_ptr<AstRawExpression> expr) {
+        expressions.push_back(std::move(expr));
+    }
+
+    void print(std::ostream& os) const override {
+        os << "raw {" << std::endl;
+        for (const auto& expr : expressions) {
+            expr->print(os);
+        }
+        os << "}";
+    }
+
+private:
+    std::vector<std::unique_ptr<AstRawExpression>> expressions;
 };

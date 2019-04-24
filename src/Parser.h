@@ -42,4 +42,6 @@ private:
     AstFunction* parseFunction();
 
     AstStatement* parseStatement();
+
+    AstRawEnvironment* parseRawEnvironment();
 };

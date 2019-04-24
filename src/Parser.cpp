@@ -58,10 +58,15 @@ AstAssignment* Parser::parseAssignment() {
 }
 
 AstExpression* Parser::parseExpression() {
-    if (peek().type == TokenType::DOLLAR) {
-        assert(false && "not implemented");
-    } else if (peek().type == TokenType::RAW) {
-        assert(false && "not implemented");
+    if (match(TokenType::DOLLAR)) {
+        if (!match(TokenType::LPAREN)) {
+            assert(false && "expected '('");
+        }
+        AstRawEnvironment* rawEnv = parseRawEnvironment();
+        if (!match(TokenType::RPAREN)) {
+            assert(false && "expected ')'");
+        }
+        return rawEnv;
     } else {
         auto expr = parseTerm();
 
@@ -94,6 +99,12 @@ AstExpression* Parser::parseFactor() {
     Token next = advance();
     if (next.type == TokenType::NUMBER) {
         return new AstNumberLiteral(next.getNumberLiteral());
+    } else if (next.type == TokenType::IDENT) {
+        if (peek().type == TokenType::LPAREN) {
+            assert(false && "unimplemented");
+        } else {
+            return new AstVariable(next.getStringLiteral());
+        }
     } else {
         assert(false && "unimplemented");
     }
@@ -147,7 +158,53 @@ AstFunction* Parser::parseFunction() {
 AstStatement* Parser::parseStatement() {
     if (peek().type == TokenType::VAR) {
         return parseAssignment();
-    } else {
+    } else if (match(TokenType::FOR)) {
         assert(false && "unimplemented");
+    } else if (match(TokenType::WHILE)) {
+        assert(false && "unimplemented");
+    } else if (match(TokenType::IF)) {
+        assert(false && "unimplemented");
+    } else if (match(TokenType::LBRACE)) {
+        assert(false && "unimplemented");
+    } else if (match(TokenType::RAW)) {
+        if (!match(TokenType::LBRACE)) {
+            assert(false && "expected '{'");
+        }
+        AstRawEnvironment* rawEnv = parseRawEnvironment();
+        if (!match(TokenType::RBRACE)) {
+            assert(false && "expected '}'");
+        }
+        return rawEnv;
+    } else {
+        AstExpression* expr = parseExpression();
+        if (!match(TokenType::SEMICOLON)) {
+            assert(false && "expected ';'");
+        }
+        return expr;
     }
+}
+
+AstRawEnvironment* Parser::parseRawEnvironment() {
+    AstRawEnvironment* rawEnv = new AstRawEnvironment();
+    while (peek().type == TokenType::RAWEXPR ||
+           peek().type == TokenType::DOLLAR) {
+        if (peek().type == TokenType::RAWEXPR) {
+            std::string expr = advance().getStringLiteral();
+            rawEnv->addRawExpression(
+                std::make_unique<AstRawBashExpression>(expr));
+        } else if (match(TokenType::DOLLAR)) {
+            if (!match(TokenType::LBRACKET)) {
+                assert(false && "expected '['");
+            }
+            auto expression = std::unique_ptr<AstExpression>(parseExpression());
+            rawEnv->addRawExpression(
+                std::make_unique<AstRawPunchExpression>(std::move(expression)));
+            if (!match(TokenType::RBRACKET)) {
+                assert(false && "expected ']'");
+            }
+        } else {
+            assert(false && "impossible case");
+        }
+    }
+    return rawEnv;
 }

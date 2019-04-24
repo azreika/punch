@@ -10,6 +10,7 @@ stmt
     : assignment SEMICOLON
     | expr SEMICOLON
     | loop
+    | RAW LBRACE bash RBRACE
     | conditional
     | LBRACE (stmt)* RBRACE
     ;
@@ -39,12 +40,11 @@ loop
 
 expr
     : DOLLAR LPAREN bash RPAREN
-    | RAW LBRACE bash RBRACE
     | term ((PLUS | MINUS) term)*
     ;
 
 bash
-    : (RAWEXPR)* (DOLLAR LBRACKET expr RBRACKET (RAWEXPR)*)*
+    : RAWEXPR (DOLLAR LBRACKET expr RBRACKET (RAWEXPR)*)*
 
 term
     : factor ((STAR | SLASH) factor)*
