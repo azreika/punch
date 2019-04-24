@@ -1,7 +1,6 @@
 #pragma once
 
 #include "AstNode.h"
-#include "Token.h"
 
 #include <iostream>
 #include <memory>
@@ -45,17 +44,17 @@ private:
 
 class AstBinaryExpression : public AstExpression {
 public:
-    AstBinaryExpression(TokenType op, std::unique_ptr<AstExpression> lhs,
+    AstBinaryExpression(char op, std::unique_ptr<AstExpression> lhs,
                         std::unique_ptr<AstExpression> rhs)
         : op(op), lhs(std::move(lhs)), rhs(std::move(rhs)) {}
 
     void print(std::ostream& os) const override {
-        os << getSymbolForTokenType(op);
+        os << op;
         os << "(" << *lhs << ", " << *rhs << ")";
     }
 
 private:
-    TokenType op;
+    char op;
     std::unique_ptr<AstExpression> lhs;
     std::unique_ptr<AstExpression> rhs;
 };

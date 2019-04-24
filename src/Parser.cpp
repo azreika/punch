@@ -72,7 +72,14 @@ AstExpression* Parser::parseExpression() {
 
         while (peek().type == TokenType::PLUS ||
                peek().type == TokenType::MINUS) {
-            TokenType op = advance().type;
+            char op;
+            switch (advance().type) {
+                case TokenType::PLUS: op = '+'; break;
+                case TokenType::MINUS: op = '-'; break;
+                case TokenType::STAR: op = '*'; break;
+                case TokenType::SLASH: op = '/'; break;
+                default: assert(false && "expected binary operator");
+            }
             auto rhs = std::unique_ptr<AstExpression>(parseTerm());
             expr = new AstBinaryExpression(
                 op, std::unique_ptr<AstExpression>(expr), std::move(rhs));
@@ -86,7 +93,7 @@ AstExpression* Parser::parseTerm() {
     auto expr = parseFactor();
 
     while (peek().type == TokenType::STAR || peek().type == TokenType::SLASH) {
-        TokenType op = advance().type;
+        char op = peek().type == TokenType::STAR ? '*' : '/';
         auto rhs = std::unique_ptr<AstExpression>(parseFactor());
         expr = new AstBinaryExpression(op, std::unique_ptr<AstExpression>(expr),
                                        std::move(rhs));
