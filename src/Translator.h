@@ -14,7 +14,7 @@ public:
 
 protected:
     void visitProgram(const AstProgram* program) override {
-        os << "!#/bin/bash" << std::endl;
+        os << "#!/bin/bash" << std::endl;
         os << std::endl;
 
         os << "# global variables" << std::endl;
