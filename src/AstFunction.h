@@ -18,6 +18,22 @@ public:
         return name;
     }
 
+    std::vector<AstVariable*> getArguments() const {
+        std::vector<AstVariable*> result;
+        for (const auto& arg : args) {
+            result.push_back(arg.get());
+        }
+        return result;
+    }
+
+    std::vector<AstStatement*> getStatements() const {
+        std::vector<AstStatement*> result;
+        for (const auto& stmt : stmts) {
+            result.push_back(stmt.get());
+        }
+        return result;
+    }
+
     void addArgument(std::unique_ptr<AstVariable> var) {
         args.push_back(std::move(var));
     }

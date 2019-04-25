@@ -20,6 +20,7 @@ protected:
         os << "# global variables" << std::endl;
         for (const auto* assignment : program->getAssignments()) {
             visitAssignment(assignment);
+            os << std::endl;
         }
         os << std::endl;
 
@@ -31,8 +32,13 @@ protected:
     }
 
     void visitFunction(const AstFunction* function) override {
-        os << "# TODO: define function " << function->getName() << "..."
-           << std::endl;
+        std::string bID = getBashIdentifier(function->getName());
+        os << bID << " (" << ") {" << std::endl;
+        for (const auto* stmt : function->getStatements()) {
+            visit(stmt);
+            os << std::endl;
+        }
+        os << "}" << std::endl;
     }
 
     void visitAssignment(const AstAssignment* assignment) override {
@@ -40,7 +46,6 @@ protected:
         std::string bID = getBashIdentifier(pID);
         os << bID << "=";
         visit(assignment->getExpression());
-        os << std::endl;
     }
 
     void visitVariable(const AstVariable* variable) override {
@@ -56,7 +61,16 @@ protected:
         os << lit->getString();
     }
 
+    void visitBinaryExpression(const AstBinaryExpression* expr) override {
+        os << "$((";
+        visit(expr->getLHS());
+        os << expr->getOperator();
+        visit(expr->getRHS());
+        os << "))";
+    }
+
 private:
+    // TODO: add tab level support
     std::ostream& os;
     AstProgram* program;
     std::map<std::string, std::string> identMap;

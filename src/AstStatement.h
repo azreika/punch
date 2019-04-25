@@ -66,8 +66,20 @@ public:
         os << "(" << *lhs << ", " << *rhs << ")";
     }
 
+    char getOperator() const {
+        return op;
+    }
+
+    AstExpression* getLHS() const {
+        return lhs.get();
+    }
+
+    AstExpression* getRHS() const {
+        return rhs.get();
+    }
+
 private:
-    char op;
+    char op; // TODO: use enum
     std::unique_ptr<AstExpression> lhs;
     std::unique_ptr<AstExpression> rhs;
 };
