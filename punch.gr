@@ -13,6 +13,7 @@ stmt
     | RAW LBRACE bash RBRACE
     | conditional
     | LBRACE (stmt)* RBRACE
+    | RETURN expr SEMICOLON
     ;
 
 conditional

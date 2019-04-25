@@ -164,3 +164,20 @@ public:
 private:
     std::vector<std::unique_ptr<AstRawExpression>> expressions;
 };
+
+class AstReturn : public AstStatement {
+public:
+    AstReturn(std::unique_ptr<AstExpression> expr) : expr(std::move(expr)) {}
+
+    AstExpression* getExpression() const {
+        return expr.get();
+    }
+
+    void print(std::ostream& os) const override {
+        os << "return ";
+        expr->print(os);
+    }
+
+private:
+    std::unique_ptr<AstExpression> expr;
+};

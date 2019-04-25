@@ -93,7 +93,7 @@ AstExpression* Parser::parseTerm() {
     auto expr = parseFactor();
 
     while (peek().type == TokenType::STAR || peek().type == TokenType::SLASH) {
-        char op = peek().type == TokenType::STAR ? '*' : '/';
+        char op = advance().type == TokenType::STAR ? '*' : '/';
         auto rhs = std::unique_ptr<AstExpression>(parseFactor());
         expr = new AstBinaryExpression(op, std::unique_ptr<AstExpression>(expr),
                                        std::move(rhs));
@@ -173,6 +173,13 @@ AstStatement* Parser::parseStatement() {
         assert(false && "unimplemented");
     } else if (match(TokenType::LBRACE)) {
         assert(false && "unimplemented");
+    } else if (match(TokenType::RETURN)) {
+        auto expr = std::unique_ptr<AstExpression>(parseExpression());
+        AstReturn* result = new AstReturn(std::move(expr));
+        if (!match(TokenType::SEMICOLON)) {
+            assert(false && "expected ';'");
+        }
+        return result;
     } else if (match(TokenType::RAW)) {
         if (!match(TokenType::LBRACE)) {
             assert(false && "expected '{'");
@@ -182,6 +189,8 @@ AstStatement* Parser::parseStatement() {
             assert(false && "expected '}'");
         }
         return rawEnv;
+    } else if (peek().type == TokenType::IDENT && peek(1).type == TokenType::EQUAL) {
+        return parseAssignment();
     } else {
         AstExpression* expr = parseExpression();
         if (!match(TokenType::SEMICOLON)) {

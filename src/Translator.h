@@ -74,6 +74,11 @@ protected:
         os << "))";
     }
 
+    void visitReturn(const AstReturn* ret) override {
+        os << "echo ";
+        visit(ret->getExpression());
+    }
+
 private:
     std::ostream& os;
     AstProgram* program;

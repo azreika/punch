@@ -26,6 +26,7 @@ public:
         LEAF(RawBashExpression);
         LEAF(RawPunchExpression);
         LEAF(RawEnvironment);
+        LEAF(Return);
 
 #undef LEAF
 
@@ -55,6 +56,7 @@ protected:
     CHILD(RawBashExpression, RawExpression);
     CHILD(RawPunchExpression, RawExpression);
     CHILD(RawEnvironment, Expression);
+    CHILD(Return, Statement);
 
 #undef CHILD
 };

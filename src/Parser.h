@@ -16,7 +16,14 @@ public:
 
     Token advance() { return tokens[idx++]; }
 
-    Token peek() const { return tokens[idx]; }
+    Token peek() const { return peek(0); }
+
+    Token peek(size_t count) const {
+        if (idx + count >= tokens.size()) {
+            return TokenType::END;
+        }
+        return tokens[idx + count];
+    }
 
     bool match(TokenType type) {
         if (peek().type == type) {
