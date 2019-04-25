@@ -1,16 +1,41 @@
-#include "AstNode.h"
-#include "AstStatement.h"
-#include "AstFunction.h"
-#include "AstProgram.h"
+#pragma once
 
-template <class T> class AstVisitor {
+#include "AstFunction.h"
+#include "AstNode.h"
+#include "AstProgram.h"
+#include "AstStatement.h"
+
+class AstVisitor {
 public:
     AstVisitor() = default;
 
-    virtual T visitNode() { return T(); }
+    void visit(const AstNode* node) {
+
+#define LEAF(Kind)                                                          \
+    if (const auto* n = dynamic_cast<const Ast##Kind*>(node))                 \
+        return visit##Kind(n);
+
+        LEAF(Program);
+        LEAF(Function);
+        LEAF(Variable);
+        LEAF(Assignment);
+        LEAF(BinaryExpression);
+        LEAF(NumberLiteral);
+        LEAF(StringLiteral);
+        LEAF(RawBashExpression);
+        LEAF(RawPunchExpression);
+        LEAF(RawEnvironment);
+#undef LEAF
+
+        std::cerr << "Unsupported type: " << typeid(node).name() << std::endl;
+        assert(false && "missing visitor type");
+    }
+
+protected:
+    virtual void visitNode(const AstNode* n) { return; }
 
 #define CHILD(Node, Parent)                                                     \
-    virtual T visit##Node(const Ast##Node* n) { return visit##Parent(n); }
+    virtual void visit##Node(const Ast##Node* n) { return visit##Parent(n); }
 
     CHILD(Program, Node);
     CHILD(Function, Node);
@@ -26,4 +51,6 @@ public:
     CHILD(RawBashExpression, RawExpression);
     CHILD(RawPunchExpression, RawExpression);
     CHILD(RawEnvironment, Expression);
+
+#undef CHILD
 };

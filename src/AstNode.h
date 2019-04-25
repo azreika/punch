@@ -2,10 +2,6 @@
 
 #include <iostream>
 
-class AstExpression;
-class AstStatement;
-class AstVariable;
-
 class AstNode {
 public:
     virtual void print(std::ostream& os) const = 0;

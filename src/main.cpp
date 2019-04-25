@@ -1,5 +1,6 @@
 #include "Parser.h"
 #include "Scanner.h"
+#include "Translator.h"
 #include "Token.h"
 
 #include <fstream>
@@ -26,15 +27,14 @@ void compileProgram(std::string filename, std::ostream& out) {
     out << std::endl;
     out << " --- parser --- " << std::endl;
     Parser parser(scanner.getTokens());
-    AstNode* program = parser.parse();
+    AstProgram* program = parser.parse();
     out << *program;
 
     // write result to out
     out << std::endl;
     out << " --- result --- " << std::endl;
-    out << "#!/bin/bash" << std::endl;
-    out << std::endl;
-    out << "echo this is the result of " << filename << std::endl;
+    Translator translator(out, program);
+    translator.run();
 }
 
 int main(int argc, char** argv) {
