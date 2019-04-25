@@ -1,6 +1,6 @@
 #include "AstVisitor.h"
 
-class Translator : public AstVisitor {
+class Translator : public AstVisitor<void> {
 public:
     Translator(std::ostream& os, AstProgram* program)
         : os(os), program(program) {}

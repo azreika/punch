@@ -5,15 +5,16 @@
 #include "AstProgram.h"
 #include "AstStatement.h"
 
+template <class T, typename... Args>
 class AstVisitor {
 public:
     AstVisitor() = default;
 
-    void visit(const AstNode* node) {
+    T visit(const AstNode* node, Args... args) {
 
-#define LEAF(Kind)                                                          \
-    if (const auto* n = dynamic_cast<const Ast##Kind*>(node))                 \
-        return visit##Kind(n);
+#define LEAF(Kind)                                                             \
+    if (const auto* n = dynamic_cast<const Ast##Kind*>(node))                  \
+        return visit##Kind(n, args...);
 
         LEAF(Program);
         LEAF(Function);
@@ -25,6 +26,7 @@ public:
         LEAF(RawBashExpression);
         LEAF(RawPunchExpression);
         LEAF(RawEnvironment);
+
 #undef LEAF
 
         std::cerr << "Unsupported type: " << typeid(node).name() << std::endl;
@@ -32,10 +34,12 @@ public:
     }
 
 protected:
-    virtual void visitNode(const AstNode* n) { return; }
+    virtual T visitNode(const AstNode* n) { return T(); }
 
-#define CHILD(Node, Parent)                                                     \
-    virtual void visit##Node(const Ast##Node* n) { return visit##Parent(n); }
+#define CHILD(Node, Parent)                                                    \
+    virtual T visit##Node(const Ast##Node* n, Args... args) {                  \
+        return visit##Parent(n, args...);                                      \
+    }
 
     CHILD(Program, Node);
     CHILD(Function, Node);
