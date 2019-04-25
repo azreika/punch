@@ -64,6 +64,15 @@ void Scanner::scanToken() {
             break;
         }
 
+        case '/': {
+            if (peek() == '/' || peek() == '*') {
+                scanComment();
+            } else {
+                addToken(TokenType::SLASH);
+            }
+            break;
+        }
+
         // complex tokens
         case '"': scanString(); break;
         case '$': {
@@ -149,8 +158,23 @@ void Scanner::scanNumber() {
 }
 
 void Scanner::scanComment() {
-    // TODO: implement this
-    assert(false && "unimplemented");
+    // TODO: assumes first char already scnaned
+    if (match('/')) {
+        while (hasNext() && peek() != '\n') {
+            advance();
+        }
+    } else if (match('*')) {
+        // TODO: support nested multiline comments
+        while (hasNext()) {
+            if (match('*')) {
+                if (peek() == '/') {
+                    return;
+                }
+            } else {
+                advance();
+            }
+        }
+    }
 }
 
 void Scanner::scanRawEnvironment(char start, char end) {
