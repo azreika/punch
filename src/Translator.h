@@ -8,7 +8,7 @@
 class Translator : public AstVisitor<void> {
 public:
     Translator(std::ostream& os, AstProgram* program)
-        : os(os), program(program) {}
+        : os(os), program(program), identMap({}), tabLevel(0) {}
 
     void run() { visit(program); }
 
@@ -34,10 +34,15 @@ protected:
     void visitFunction(const AstFunction* function) override {
         std::string bID = getBashIdentifier(function->getName());
         os << bID << " (" << ") {" << std::endl;
+
+        tabLevel += 1;
         for (const auto* stmt : function->getStatements()) {
+            os << tabs();
             visit(stmt);
             os << std::endl;
         }
+        tabLevel -= 1;
+
         os << "}" << std::endl;
     }
 
@@ -70,10 +75,10 @@ protected:
     }
 
 private:
-    // TODO: add tab level support
     std::ostream& os;
     AstProgram* program;
     std::map<std::string, std::string> identMap;
+    size_t tabLevel;
 
     std::string getBashIdentifier(std::string punchIdentifier) {
         auto pos = identMap.find(punchIdentifier);
@@ -94,5 +99,13 @@ private:
             pos = identMap.find(name.str());
         }
         return name.str();
+    }
+
+    std::string tabs() const {
+        std::stringstream tabs;
+        for (size_t i = 0; i < tabLevel; i++) {
+            tabs << "\t";
+        }
+        return tabs.str();
     }
 };
