@@ -32,9 +32,12 @@ public:
         : declaration(declaration), var(std::move(var)), expr(std::move(expr)) {
     }
 
-    // TODO: change this
-    std::string getName() const {
-        return var->getName();
+    AstVariable* getVariable() const {
+        return var.get();
+    }
+
+    AstExpression* getExpression() const {
+        return expr.get();
     }
 
     void print(std::ostream& os) const override {
@@ -75,6 +78,10 @@ class AstNumberLiteral : public AstLiteral {
 public:
     AstNumberLiteral(int number) : number(number) {}
 
+    int getNumber() const {
+        return number;
+    }
+
     void print(std::ostream& os) const override { os << number; }
 
 private:
@@ -84,6 +91,12 @@ private:
 class AstStringLiteral : public AstLiteral {
 public:
     AstStringLiteral(std::string string) : string(string) {}
+
+    std::string getString() const {
+        return string;
+    }
+
+    void print(std::ostream& os) const override { os << string; }
 
 private:
     std::string string;
