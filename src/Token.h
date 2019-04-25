@@ -26,6 +26,7 @@ enum class TokenType {
     RAW,
     VAR,
     EQUAL,
+    RETURN,
 
     // operators
     LOR,
@@ -74,6 +75,7 @@ inline std::string getSymbolForTokenType(TokenType type) {
         case TokenType::RAW: return "RAW";
         case TokenType::VAR: return "VAR";
         case TokenType::EQUAL: return "=";
+        case TokenType::RETURN: return "RETURN";
 
         // operators
         case TokenType::LOR: return "||";

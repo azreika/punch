@@ -129,6 +129,8 @@ void Scanner::scanIdentifier() {
     } else if (result == "raw") {
         addToken(TokenType::RAW);
         scanRawEnvironment('{', '}');
+    } else if (result == "return") {
+        addToken(TokenType::RETURN);
     } else {
         // otherwise, it is an identifier
         addToken(TokenType::IDENT, result);
