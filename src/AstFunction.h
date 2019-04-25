@@ -14,6 +14,10 @@ public:
                 std::vector<std::unique_ptr<AstStatement>> stmts)
         : name(name), args(std::move(args)), stmts(std::move(stmts)) {}
 
+    std::string getName() const {
+        return name;
+    }
+
     void addArgument(std::unique_ptr<AstVariable> var) {
         args.push_back(std::move(var));
     }

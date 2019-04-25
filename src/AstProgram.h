@@ -1,12 +1,12 @@
 #pragma once
 
-#include "AstNode.h"
 #include "AstFunction.h"
+#include "AstNode.h"
 #include "AstStatement.h"
 
 #include <iostream>
-#include <vector>
 #include <memory>
+#include <vector>
 
 class AstProgram : public AstNode {
 public:
@@ -28,6 +28,24 @@ public:
         }
     }
 
+    // TODO: helper function for unique_ptr to pointer
+
+    std::vector<AstAssignment*> getAssignments() const {
+        std::vector<AstAssignment*> result;
+        for (const auto& assignment : assignments) {
+            result.push_back(assignment.get());
+        }
+        return result;
+    }
+
+    std::vector<AstFunction*> getFunctions() const {
+        std::vector<AstFunction*> result;
+        for (const auto& function : functions) {
+            result.push_back(function.get());
+        }
+        return result;
+    }
+
     void addAssignment(std::unique_ptr<AstAssignment> assignment) {
         assignments.push_back(std::move(assignment));
     }
@@ -40,4 +58,3 @@ private:
     std::vector<std::unique_ptr<AstAssignment>> assignments;
     std::vector<std::unique_ptr<AstFunction>> functions;
 };
-

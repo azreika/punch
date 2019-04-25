@@ -14,6 +14,11 @@ class AstVariable : public AstExpression {
 public:
     AstVariable(std::string ident) : ident(ident) {}
 
+    // TODO: change this
+    std::string getName() const {
+        return ident;
+    }
+
     void print(std::ostream& os) const override { os << ident; }
 
 private:
@@ -25,6 +30,11 @@ public:
     AstAssignment(bool declaration, std::unique_ptr<AstVariable> var,
                   std::unique_ptr<AstExpression> expr)
         : declaration(declaration), var(std::move(var)), expr(std::move(expr)) {
+    }
+
+    // TODO: change this
+    std::string getName() const {
+        return var->getName();
     }
 
     void print(std::ostream& os) const override {
