@@ -29,11 +29,16 @@ protected:
             visitFunction(function);
         }
         os << std::endl;
+
+        os << "# start the program" << std::endl;
+        os << getBashIdentifier("main");
+        os << std::endl;
     }
 
     void visitFunction(const AstFunction* function) override {
         std::string bID = getBashIdentifier(function->getName());
-        os << bID << " (" << ") {" << std::endl;
+        os << bID << " ("
+           << ") {" << std::endl;
 
         tabLevel += 1;
         for (const auto* stmt : function->getStatements()) {
@@ -79,6 +84,20 @@ protected:
         visit(ret->getExpression());
     }
 
+    void visitRawBashExpression(const AstRawBashExpression* raw) override {
+        os << raw->getExpression();
+    }
+
+    void visitRawPunchExpression(const AstRawPunchExpression* expr) override {
+        visit(expr->getExpression());
+    }
+
+    void visitRawEnvironment(const AstRawEnvironment* env) override {
+        for (auto* expr : env->getExpressions()) {
+            visit(expr);
+        }
+    }
+
 private:
     std::ostream& os;
     AstProgram* program;
@@ -109,7 +128,7 @@ private:
     std::string tabs() const {
         std::stringstream tabs;
         for (size_t i = 0; i < tabLevel; i++) {
-            tabs << "\t";
+            tabs << "    ";
         }
         return tabs.str();
     }

@@ -120,6 +120,10 @@ class AstRawBashExpression : public AstRawExpression {
 public:
     AstRawBashExpression(std::string expr) : expr(expr) {}
 
+    std::string getExpression() const {
+        return expr;
+    }
+
     void print(std::ostream& os) const override { os << expr; }
 
 private:
@@ -130,6 +134,10 @@ class AstRawPunchExpression : public AstRawExpression {
 public:
     AstRawPunchExpression(std::unique_ptr<AstExpression> expr)
         : expr(std::move(expr)) {}
+
+    AstExpression* getExpression() const {
+        return expr.get();
+    }
 
     void print(std::ostream& os) const override {
         os << "$[";
@@ -148,6 +156,14 @@ public:
     AstRawEnvironment(
         std::vector<std::unique_ptr<AstRawExpression>> expressions)
         : expressions(std::move(expressions)) {}
+
+    std::vector<AstRawExpression*> getExpressions() const {
+        std::vector<AstRawExpression*> result;
+        for (const auto& expr : expressions) {
+            result.push_back(expr.get());
+        }
+        return result;
+    }
 
     void addRawExpression(std::unique_ptr<AstRawExpression> expr) {
         expressions.push_back(std::move(expr));
