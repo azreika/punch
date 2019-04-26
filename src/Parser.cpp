@@ -14,7 +14,7 @@ AstProgram* Parser::parseProgram() {
     while (hasNext()) {
         if (peek().type == TokenType::FUNC) {
             // parse function declaration
-            auto function = std::unique_ptr<AstFunction>(parseFunction());
+            auto function = std::unique_ptr<AstFunctionDecl>(parseFunction());
             program->addFunction(std::move(function));
         } else if (peek().type == TokenType::VAR ||
                    (peek().type == TokenType::IDENT &&
@@ -32,7 +32,7 @@ AstProgram* Parser::parseProgram() {
     return program;
 }
 
-AstFunction* Parser::parseFunction() {
+AstFunctionDecl* Parser::parseFunction() {
     /*  fundecl
      *      : FUNC IDENT LPAREN arglist RPAREN LBRACE (stmt)* RBRACE
      */
@@ -54,7 +54,7 @@ AstFunction* Parser::parseFunction() {
         generateError(advance(), {TokenType::LPAREN});
     }
 
-    AstFunction* function = new AstFunction(name);
+    AstFunctionDecl* function = new AstFunctionDecl(name);
 
     // arglist RPAREN
     if (!match(TokenType::RPAREN)) {

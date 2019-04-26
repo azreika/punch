@@ -17,7 +17,7 @@ public:
         return visit##Kind(n, args...);
 
         LEAF(Program);
-        LEAF(Function);
+        LEAF(FunctionDecl);
         LEAF(Variable);
         LEAF(Assignment);
         LEAF(BinaryExpression);
@@ -43,7 +43,7 @@ protected:
     }
 
     CHILD(Program, Node);
-    CHILD(Function, Node);
+    CHILD(FunctionDecl, Node);
     CHILD(Statement, Node);
     CHILD(Expression, Statement);
     CHILD(Variable, Expression);

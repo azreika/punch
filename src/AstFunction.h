@@ -5,11 +5,11 @@
 
 #include <vector>
 
-class AstFunction : public AstNode {
+class AstFunctionDecl : public AstNode {
 public:
-    AstFunction(std::string name) : name(name), args({}), stmts({}) {}
+    AstFunctionDecl(std::string name) : name(name), args({}), stmts({}) {}
 
-    AstFunction(std::string name,
+    AstFunctionDecl(std::string name,
                 std::vector<std::unique_ptr<AstVariable>> args,
                 std::vector<std::unique_ptr<AstStatement>> stmts)
         : name(name), args(std::move(args)), stmts(std::move(stmts)) {}

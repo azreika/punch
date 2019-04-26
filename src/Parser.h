@@ -47,7 +47,7 @@ private:
     AstExpression* parseTerm();
     AstExpression* parseFactor();
 
-    AstFunction* parseFunction();
+    AstFunctionDecl* parseFunction();
 
     AstStatement* parseStatement();
 

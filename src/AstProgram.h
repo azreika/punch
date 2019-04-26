@@ -38,8 +38,8 @@ public:
         return result;
     }
 
-    std::vector<AstFunction*> getFunctions() const {
-        std::vector<AstFunction*> result;
+    std::vector<AstFunctionDecl*> getFunctions() const {
+        std::vector<AstFunctionDecl*> result;
         for (const auto& function : functions) {
             result.push_back(function.get());
         }
@@ -50,11 +50,11 @@ public:
         assignments.push_back(std::move(assignment));
     }
 
-    void addFunction(std::unique_ptr<AstFunction> function) {
+    void addFunction(std::unique_ptr<AstFunctionDecl> function) {
         functions.push_back(std::move(function));
     }
 
 private:
     std::vector<std::unique_ptr<AstAssignment>> assignments;
-    std::vector<std::unique_ptr<AstFunction>> functions;
+    std::vector<std::unique_ptr<AstFunctionDecl>> functions;
 };

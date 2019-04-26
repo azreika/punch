@@ -26,7 +26,7 @@ protected:
 
         os << "# functions" << std::endl;
         for (const auto* function : program->getFunctions()) {
-            visitFunction(function);
+            visit(function);
         }
         os << std::endl;
 
@@ -35,7 +35,7 @@ protected:
         os << std::endl;
     }
 
-    void visitFunction(const AstFunction* function) override {
+    void visitFunctionDecl(const AstFunctionDecl* function) override {
         std::string bID = getBashIdentifier(function->getName());
         os << bID << " ("
            << ") {" << std::endl;
