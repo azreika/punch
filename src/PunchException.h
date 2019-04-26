@@ -5,6 +5,7 @@
 #include <exception>
 #include <iostream>
 #include <sstream>
+#include <vector>
 
 class PunchException : public std::exception {
 public:
@@ -42,10 +43,18 @@ class ParserException : public PunchException {
 public:
     ParserException(std::string msg) : msg(msg) {}
 
-    ParserException(TokenType tokenSeen, TokenType tokenExpected) {
+    // TODO: helper function for join
+    ParserException(TokenType tokenSeen, std::vector<TokenType> expectedTokens) {
+        assert(!expectedTokens.empty() && "at least one token type should be expected");
         std::stringstream msgStream;
-        msgStream << "expected '" << getSymbolForTokenType(tokenExpected)
-                  << "' but got '" << getSymbolForTokenType(tokenSeen) << "'";
+        msgStream << "expected ";
+        for (size_t i = 0; i < expectedTokens.size() - 1; i++) {
+            const auto& tok = expectedTokens[i];
+            msgStream << "'" << getSymbolForTokenType(tok) << "', ";
+        }
+        const auto& lastToken = expectedTokens[expectedTokens.size()-1];
+        msgStream << "'" << getSymbolForTokenType(lastToken) << "' ";
+        msgStream << "but got '" << getSymbolForTokenType(tokenSeen) << "'";
         msg = msgStream.str();
     }
 

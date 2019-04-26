@@ -1,27 +1,97 @@
 #include "Parser.h"
 #include "AstNode.h"
 #include "AstStatement.h"
+#include "PunchException.h"
 #include "Token.h"
 
-// TODO: error handling
-
 AstProgram* Parser::parseProgram() {
+    /*  program
+     *      : (fundecl | assignment)* END
+     */
+
     AstProgram* program = new AstProgram();
 
     while (hasNext()) {
         if (peek().type == TokenType::FUNC) {
+            // parse function declaration
             auto function = std::unique_ptr<AstFunction>(parseFunction());
             program->addFunction(std::move(function));
         } else if (peek().type == TokenType::VAR ||
-                   peek().type == TokenType::IDENT) {
+                   (peek().type == TokenType::IDENT &&
+                    peek(1).type == TokenType::EQUAL)) {
+            // parse assignment
             auto assignment = std::unique_ptr<AstAssignment>(parseAssignment());
             program->addAssignment(std::move(assignment));
         } else {
-            assert(false && "unexpected token");
+            // neither a function definition nor an assignment - error
+            generateError(advance().type,
+                          {TokenType::FUNC, TokenType::VAR, TokenType::IDENT});
         }
     }
 
     return program;
+}
+
+AstFunction* Parser::parseFunction() {
+    /*  fundecl
+     *      : FUNC IDENT LPAREN arglist RPAREN LBRACE (stmt)* RBRACE
+     */
+
+    // FUNC
+    if (!match(TokenType::FUNC)) {
+        generateError(advance().type, {TokenType::FUNC});
+    }
+
+    // IDENT
+    Token next = advance();
+    if (next.type != TokenType::IDENT) {
+        generateError(next.type, {TokenType::IDENT});
+    }
+    std::string name = next.getStringLiteral();
+
+    // LPAREN
+    if (!match(TokenType::LPAREN)) {
+        generateError(advance().type, {TokenType::LPAREN});
+    }
+
+    AstFunction* function = new AstFunction(name);
+
+    // arglist RPAREN
+    if (!match(TokenType::RPAREN)) {
+        /*
+         * arglist
+         *      : (IDENT COMMA)* IDENT
+         */
+        do {
+            Token arg = advance();
+            if (arg.type != TokenType::IDENT) {
+                generateError(advance().type, {TokenType::IDENT});
+            }
+            auto var = std::make_unique<AstVariable>(arg.getStringLiteral());
+            function->addArgument(std::move(var));
+        } while (match(TokenType::COMMA));
+
+        if (!match(TokenType::RPAREN)) {
+            generateError(advance().type, {TokenType::RPAREN});
+        }
+    }
+
+    // LBRACE
+    if (!match(TokenType::LBRACE)) {
+        generateError(advance().type, {TokenType::LBRACE});
+    }
+
+    // stmt*
+    while (hasNext() && peek().type != TokenType::RBRACE) {
+        function->addStatement(std::unique_ptr<AstStatement>(parseStatement()));
+    }
+
+    // RBRACE
+    if (!match(TokenType::RBRACE)) {
+        generateError(advance().type, {TokenType::RBRACE});
+    }
+
+    return function;
 }
 
 AstAssignment* Parser::parseAssignment() {
@@ -113,53 +183,9 @@ AstExpression* Parser::parseFactor() {
             return new AstVariable(next.getStringLiteral());
         }
     } else {
+        std::cout << next << std::endl;
         assert(false && "unimplemented");
     }
-}
-
-AstFunction* Parser::parseFunction() {
-    if (!match(TokenType::FUNC)) {
-        assert(false && "expected 'func'");
-    }
-
-    Token next = advance();
-    if (next.type != TokenType::IDENT) {
-        assert(false && "expected ident");
-    }
-    std::string name = next.getStringLiteral();
-    if (!match(TokenType::LPAREN)) {
-        assert(false && "expected '('");
-    }
-
-    AstFunction* function = new AstFunction(name);
-    if (!match(TokenType::RPAREN)) {
-        do {
-            Token arg = advance();
-            if (arg.type != TokenType::IDENT) {
-                assert(false && "expected arguments");
-            }
-            auto var = std::make_unique<AstVariable>(arg.getStringLiteral());
-            function->addArgument(std::move(var));
-        } while (match(TokenType::COMMA));
-
-        if (!match(TokenType::RPAREN)) {
-            assert(false && "expected ')'");
-        }
-    }
-
-    if (!match(TokenType::LBRACE)) {
-        assert(false && "expected '{'");
-    }
-
-    while (hasNext() && peek().type != TokenType::RBRACE) {
-        function->addStatement(std::unique_ptr<AstStatement>(parseStatement()));
-    }
-
-    if (!match(TokenType::RBRACE)) {
-        assert(false && "expected '}'");
-    }
-
-    return function;
 }
 
 AstStatement* Parser::parseStatement() {
@@ -189,7 +215,8 @@ AstStatement* Parser::parseStatement() {
             assert(false && "expected '}'");
         }
         return rawEnv;
-    } else if (peek().type == TokenType::IDENT && peek(1).type == TokenType::EQUAL) {
+    } else if (peek().type == TokenType::IDENT &&
+               peek(1).type == TokenType::EQUAL) {
         return parseAssignment();
     } else {
         AstExpression* expr = parseExpression();

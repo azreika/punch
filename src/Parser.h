@@ -2,6 +2,7 @@
 
 #include "AstProgram.h"
 #include "AstStatement.h"
+#include "PunchException.h"
 #include "Token.h"
 
 #include <vector>
@@ -51,4 +52,13 @@ private:
     AstStatement* parseStatement();
 
     AstRawEnvironment* parseRawEnvironment();
+
+    // TODO: clean up error generation
+    void generateError(TokenType seen, std::vector<TokenType> expected) {
+        ParserException exc = expected.empty()
+                                  ? ParserException(seen)
+                                  : ParserException(seen, expected);
+        PunchException::handleException(exc);
+        exit(1);
+    }
 };
