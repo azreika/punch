@@ -1,6 +1,7 @@
 #pragma once
 
 #include "AstNode.h"
+#include "Tools.h"
 
 #include <iostream>
 #include <memory>
@@ -54,6 +55,14 @@ public:
     AstFunctionCall(std::string name,
                     std::vector<std::unique_ptr<AstExpression>> arguments)
         : name(name), arguments(std::move(arguments)) {}
+
+    std::string getName() const {
+        return name;
+    }
+
+    std::vector<AstExpression*> getArguments() const {
+        return Tools::toPtrVector(arguments);
+    }
 
 private:
     std::string name;
@@ -149,11 +158,7 @@ public:
         : expressions(std::move(expressions)) {}
 
     std::vector<AstRawExpression*> getExpressions() const {
-        std::vector<AstRawExpression*> result;
-        for (const auto& expr : expressions) {
-            result.push_back(expr.get());
-        }
-        return result;
+        return Tools::toPtrVector(expressions);
     }
 
     void addRawExpression(std::unique_ptr<AstRawExpression> expr) {

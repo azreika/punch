@@ -3,6 +3,7 @@
 #include "AstFunction.h"
 #include "AstNode.h"
 #include "AstStatement.h"
+#include "Tools.h"
 
 #include <iostream>
 #include <memory>
@@ -31,19 +32,11 @@ public:
     // TODO: helper function for unique_ptr to pointer
 
     std::vector<AstAssignment*> getAssignments() const {
-        std::vector<AstAssignment*> result;
-        for (const auto& assignment : assignments) {
-            result.push_back(assignment.get());
-        }
-        return result;
+        return Tools::toPtrVector(assignments);
     }
 
     std::vector<AstFunctionDecl*> getFunctions() const {
-        std::vector<AstFunctionDecl*> result;
-        for (const auto& function : functions) {
-            result.push_back(function.get());
-        }
-        return result;
+        return Tools::toPtrVector(functions);
     }
 
     void addAssignment(std::unique_ptr<AstAssignment> assignment) {
