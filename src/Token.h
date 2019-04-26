@@ -111,14 +111,20 @@ inline std::string getSymbolForTokenType(TokenType type) {
 class Token {
 public:
     const TokenType type;
+    size_t line;
+    size_t col;
 
-    Token(TokenType type) : type(type), numberLiteral({}), stringLiteral({}) {}
+    Token(TokenType type, size_t line, size_t col)
+        : type(type), line(line), col(col), numberLiteral({}),
+          stringLiteral({}) {}
 
-    Token(TokenType type, int numberLiteral)
-        : type(type), numberLiteral(numberLiteral), stringLiteral({}) {}
+    Token(TokenType type, int numberLiteral, size_t line, size_t col)
+        : type(type), line(line), col(col), numberLiteral(numberLiteral),
+          stringLiteral({}) {}
 
-    Token(TokenType type, std::string stringLiteral)
-        : type(type), numberLiteral({}), stringLiteral(stringLiteral) {}
+    Token(TokenType type, std::string stringLiteral, size_t line, size_t col)
+        : type(type), line(line), col(col), numberLiteral({}),
+          stringLiteral(stringLiteral) {}
 
     bool isLiteral() const { return isNumberLiteral() || isStringLiteral(); }
 

@@ -1,5 +1,4 @@
 #include "Scanner.h"
-#include "PunchException.h"
 #include "Token.h"
 
 #include <vector>
@@ -9,9 +8,9 @@ void Scanner::scanToken() {
 
     switch (chr) {
         // whitespace
+        case '\n': line += 1; col = 0;
         case ' ':
         case '\t':
-        case '\n':
         case '\r': break;
 
         // single-character simple tokens
@@ -88,7 +87,7 @@ void Scanner::scanToken() {
                 scanIdentifier();
             } else {
                 // unexpected character
-                PunchException::handleException(ScannerException(chr));
+                generateError(chr, line, col);
             }
         }
     }

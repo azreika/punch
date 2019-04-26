@@ -1,5 +1,6 @@
 #pragma once
 
+#include "PunchException.h"
 #include "Token.h"
 
 #include <vector>
@@ -7,7 +8,8 @@
 class Scanner {
 public:
     Scanner(std::string source)
-        : source(source), idx(0), currTokenStart(0), tokens({}) {
+        : source(source), idx(0), currTokenStart(0), tokens({}), line(1),
+          col(0) {
         while (hasNext()) {
             currTokenStart = idx;
             scanToken();
@@ -34,13 +36,18 @@ private:
     size_t idx;
     size_t currTokenStart;
     std::vector<Token> tokens;
+    size_t line;
+    size_t col;
 
     /**
      * Advances the scanner by one character.
      *
      * @return the character that was pointed to by the scanner
      */
-    char advance() { return source[idx++]; }
+    char advance() {
+        col += 1;
+        return source[idx++];
+    }
 
     /**
      * Gets the current character in the source string, without advancing the
@@ -108,7 +115,7 @@ private:
      *
      * @param type the type of the token to push in
      */
-    void addToken(TokenType type) { tokens.push_back(Token(type)); }
+    void addToken(TokenType type) { tokens.push_back(Token(type, line, col)); }
 
     /**
      * Adds a string-literal token to the token stream.
@@ -117,7 +124,7 @@ private:
      * @stringLiteral the string literal attached to the token
      */
     void addToken(TokenType type, std::string stringLiteral) {
-        tokens.push_back(Token(type, stringLiteral));
+        tokens.push_back(Token(type, stringLiteral, line, col));
     }
 
     /**
@@ -127,6 +134,19 @@ private:
      * @numberLiteral the number literal attached to the token
      */
     void addToken(TokenType type, int numberLiteral) {
-        tokens.push_back(Token(type, numberLiteral));
+        tokens.push_back(Token(type, numberLiteral, line, col));
+    }
+
+    /**
+     * Generates an error when an unexpected character appears.
+     *
+     * @param seen the unexpected character to report
+     * @param line the line the character appeared on
+     * @param col the column of the character within the line
+     */
+    void generateError(char seen, size_t line, size_t col) {
+        PunchException::handleException(ScannerException(seen, line, col));
+        // TODO: non-breaking error handling
+        exit(1);
     }
 };

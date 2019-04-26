@@ -24,7 +24,7 @@ AstProgram* Parser::parseProgram() {
             program->addAssignment(std::move(assignment));
         } else {
             // neither a function definition nor an assignment - error
-            generateError(advance().type,
+            generateError(advance(),
                           {TokenType::FUNC, TokenType::VAR, TokenType::IDENT});
         }
     }
@@ -39,19 +39,19 @@ AstFunction* Parser::parseFunction() {
 
     // FUNC
     if (!match(TokenType::FUNC)) {
-        generateError(advance().type, {TokenType::FUNC});
+        generateError(advance(), {TokenType::FUNC});
     }
 
     // IDENT
     Token next = advance();
     if (next.type != TokenType::IDENT) {
-        generateError(next.type, {TokenType::IDENT});
+        generateError(next, {TokenType::IDENT});
     }
     std::string name = next.getStringLiteral();
 
     // LPAREN
     if (!match(TokenType::LPAREN)) {
-        generateError(advance().type, {TokenType::LPAREN});
+        generateError(advance(), {TokenType::LPAREN});
     }
 
     AstFunction* function = new AstFunction(name);
@@ -65,20 +65,20 @@ AstFunction* Parser::parseFunction() {
         do {
             Token arg = advance();
             if (arg.type != TokenType::IDENT) {
-                generateError(advance().type, {TokenType::IDENT});
+                generateError(advance(), {TokenType::IDENT});
             }
             auto var = std::make_unique<AstVariable>(arg.getStringLiteral());
             function->addArgument(std::move(var));
         } while (match(TokenType::COMMA));
 
         if (!match(TokenType::RPAREN)) {
-            generateError(advance().type, {TokenType::RPAREN});
+            generateError(advance(), {TokenType::RPAREN});
         }
     }
 
     // LBRACE
     if (!match(TokenType::LBRACE)) {
-        generateError(advance().type, {TokenType::LBRACE});
+        generateError(advance(), {TokenType::LBRACE});
     }
 
     // stmt*
@@ -88,7 +88,7 @@ AstFunction* Parser::parseFunction() {
 
     // RBRACE
     if (!match(TokenType::RBRACE)) {
-        generateError(advance().type, {TokenType::RBRACE});
+        generateError(advance(), {TokenType::RBRACE});
     }
 
     return function;

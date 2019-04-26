@@ -21,7 +21,7 @@ public:
 
     Token peek(size_t count) const {
         if (idx + count >= tokens.size()) {
-            return TokenType::END;
+            return Token(TokenType::END, 0, 0);
         }
         return tokens[idx + count];
     }
@@ -54,10 +54,11 @@ private:
     AstRawEnvironment* parseRawEnvironment();
 
     // TODO: clean up error generation
-    void generateError(TokenType seen, std::vector<TokenType> expected) {
-        ParserException exc = expected.empty()
-                                  ? ParserException(seen)
-                                  : ParserException(seen, expected);
+    void generateError(Token seen, std::vector<TokenType> expected) {
+        ParserException exc =
+            expected.empty()
+                ? ParserException(seen.type, seen.line, seen.col)
+                : ParserException(seen.type, expected, seen.line, seen.col);
         PunchException::handleException(exc);
         exit(1);
     }
