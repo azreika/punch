@@ -23,6 +23,7 @@ public:
         LEAF(BinaryExpression);
         LEAF(NumberLiteral);
         LEAF(StringLiteral);
+        LEAF(FunctionCall);
         LEAF(RawBashExpression);
         LEAF(RawPunchExpression);
         LEAF(RawEnvironment);
@@ -47,6 +48,7 @@ protected:
     CHILD(Statement, Node);
     CHILD(Expression, Statement);
     CHILD(Variable, Expression);
+    CHILD(FunctionCall, Expression);
     CHILD(Assignment, Statement);
     CHILD(BinaryExpression, Expression);
     CHILD(Literal, Expression);

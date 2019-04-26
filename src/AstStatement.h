@@ -15,9 +15,7 @@ public:
     AstVariable(std::string ident) : ident(ident) {}
 
     // TODO: change this
-    std::string getName() const {
-        return ident;
-    }
+    std::string getName() const { return ident; }
 
     void print(std::ostream& os) const override { os << ident; }
 
@@ -32,13 +30,9 @@ public:
         : declaration(declaration), var(std::move(var)), expr(std::move(expr)) {
     }
 
-    AstVariable* getVariable() const {
-        return var.get();
-    }
+    AstVariable* getVariable() const { return var.get(); }
 
-    AstExpression* getExpression() const {
-        return expr.get();
-    }
+    AstExpression* getExpression() const { return expr.get(); }
 
     void print(std::ostream& os) const override {
         if (declaration) {
@@ -55,6 +49,17 @@ private:
     std::unique_ptr<AstExpression> expr;
 };
 
+class AstFunctionCall : public AstExpression {
+public:
+    AstFunctionCall(std::string name,
+                    std::vector<std::unique_ptr<AstExpression>> arguments)
+        : name(name), arguments(std::move(arguments)) {}
+
+private:
+    std::string name;
+    std::vector<std::unique_ptr<AstExpression>> arguments;
+};
+
 class AstBinaryExpression : public AstExpression {
 public:
     AstBinaryExpression(char op, std::unique_ptr<AstExpression> lhs,
@@ -66,17 +71,11 @@ public:
         os << "(" << *lhs << ", " << *rhs << ")";
     }
 
-    char getOperator() const {
-        return op;
-    }
+    char getOperator() const { return op; }
 
-    AstExpression* getLHS() const {
-        return lhs.get();
-    }
+    AstExpression* getLHS() const { return lhs.get(); }
 
-    AstExpression* getRHS() const {
-        return rhs.get();
-    }
+    AstExpression* getRHS() const { return rhs.get(); }
 
 private:
     char op; // TODO: use enum
@@ -90,9 +89,7 @@ class AstNumberLiteral : public AstLiteral {
 public:
     AstNumberLiteral(int number) : number(number) {}
 
-    int getNumber() const {
-        return number;
-    }
+    int getNumber() const { return number; }
 
     void print(std::ostream& os) const override { os << number; }
 
@@ -104,9 +101,7 @@ class AstStringLiteral : public AstLiteral {
 public:
     AstStringLiteral(std::string string) : string(string) {}
 
-    std::string getString() const {
-        return string;
-    }
+    std::string getString() const { return string; }
 
     void print(std::ostream& os) const override { os << string; }
 
@@ -120,9 +115,7 @@ class AstRawBashExpression : public AstRawExpression {
 public:
     AstRawBashExpression(std::string expr) : expr(expr) {}
 
-    std::string getExpression() const {
-        return expr;
-    }
+    std::string getExpression() const { return expr; }
 
     void print(std::ostream& os) const override { os << expr; }
 
@@ -135,9 +128,7 @@ public:
     AstRawPunchExpression(std::unique_ptr<AstExpression> expr)
         : expr(std::move(expr)) {}
 
-    AstExpression* getExpression() const {
-        return expr.get();
-    }
+    AstExpression* getExpression() const { return expr.get(); }
 
     void print(std::ostream& os) const override {
         os << "$[";
@@ -185,9 +176,7 @@ class AstReturn : public AstStatement {
 public:
     AstReturn(std::unique_ptr<AstExpression> expr) : expr(std::move(expr)) {}
 
-    AstExpression* getExpression() const {
-        return expr.get();
-    }
+    AstExpression* getExpression() const { return expr.get(); }
 
     void print(std::ostream& os) const override {
         os << "return ";
