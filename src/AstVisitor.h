@@ -5,6 +5,8 @@
 #include "AstProgram.h"
 #include "AstStatement.h"
 
+#include <cassert>
+
 template <class T, typename... Args> class AstVisitor {
 public:
     AstVisitor() = default;

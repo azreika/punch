@@ -13,90 +13,17 @@ public:
     void run() { visit(program); }
 
 protected:
-    void visitProgram(const AstProgram* program) override {
-        os << "#!/bin/bash" << std::endl;
-        os << std::endl;
-
-        os << "# global variables" << std::endl;
-        for (const auto* assignment : program->getAssignments()) {
-            visitAssignment(assignment);
-            os << std::endl;
-        }
-        os << std::endl;
-
-        os << "# functions" << std::endl;
-        for (const auto* function : program->getFunctions()) {
-            visit(function);
-        }
-        os << std::endl;
-
-        os << "# start the program" << std::endl;
-        os << getBashIdentifier("main");
-        os << std::endl;
-    }
-
-    void visitFunctionDecl(const AstFunctionDecl* function) override {
-        std::string bID = getBashIdentifier(function->getName());
-        os << bID << " ("
-           << ") {" << std::endl;
-
-        tabLevel += 1;
-        for (const auto* stmt : function->getStatements()) {
-            os << tabs();
-            visit(stmt);
-            os << std::endl;
-        }
-        tabLevel -= 1;
-
-        os << "}" << std::endl;
-    }
-
-    void visitAssignment(const AstAssignment* assignment) override {
-        std::string pID = assignment->getVariable()->getName();
-        std::string bID = getBashIdentifier(pID);
-        os << bID << "=";
-        visit(assignment->getExpression());
-    }
-
-    void visitVariable(const AstVariable* variable) override {
-        std::string bID = getBashIdentifier(variable->getName());
-        os << "$" << bID;
-    }
-
-    void visitNumberLiteral(const AstNumberLiteral* lit) override {
-        os << lit->getNumber();
-    }
-
-    void visitStringLiteral(const AstStringLiteral* lit) override {
-        os << lit->getString();
-    }
-
-    void visitBinaryExpression(const AstBinaryExpression* expr) override {
-        os << "$((";
-        visit(expr->getLHS());
-        os << expr->getOperator();
-        visit(expr->getRHS());
-        os << "))";
-    }
-
-    void visitReturn(const AstReturn* ret) override {
-        os << "echo ";
-        visit(ret->getExpression());
-    }
-
-    void visitRawBashExpression(const AstRawBashExpression* raw) override {
-        os << raw->getExpression();
-    }
-
-    void visitRawPunchExpression(const AstRawPunchExpression* expr) override {
-        visit(expr->getExpression());
-    }
-
-    void visitRawEnvironment(const AstRawEnvironment* env) override {
-        for (auto* expr : env->getExpressions()) {
-            visit(expr);
-        }
-    }
+    void visitProgram(const AstProgram*) override;
+    void visitFunctionDecl(const AstFunctionDecl*) override;
+    void visitAssignment(const AstAssignment*) override;
+    void visitVariable(const AstVariable*) override;
+    void visitNumberLiteral(const AstNumberLiteral*) override;
+    void visitStringLiteral(const AstStringLiteral*) override;
+    void visitBinaryExpression(const AstBinaryExpression*) override;
+    void visitReturn(const AstReturn*) override;
+    void visitRawBashExpression(const AstRawBashExpression*) override;
+    void visitRawPunchExpression(const AstRawPunchExpression*) override;
+    void visitRawEnvironment(const AstRawEnvironment*) override;
 
 private:
     std::ostream& os;

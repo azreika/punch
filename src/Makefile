@@ -6,6 +6,8 @@ TARGET=punch
 
 all: $(TARGET)
 
+# TODO: clean this up properly later
+
 clean:
 	rm -f *.o
 	rm -f $(TARGET)
@@ -13,11 +15,13 @@ clean:
 %.o: %.cpp %.h
 	$(CC) -c $(CPPFLAGS) $< -o $@
 
-Parser.o: Token.h AstNode.h AstProgram.h AstStatement.h
+Parser.o: Token.h AstNode.h AstProgram.h AstStatement.h AstFunction.h
 
 Scanner.o: Token.h
 
-main.o: Scanner.h Parser.h Token.h
+Translator.o: AstVisitor.h
 
-punch: main.o Scanner.o Parser.o PunchException.o
+main.o: Scanner.h Parser.h Translator.h
+
+punch: main.o Scanner.o Parser.o PunchException.o Translator.o
 	$(CC) $(CPPFLAGS) $^ -o $@
