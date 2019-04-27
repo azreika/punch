@@ -4,25 +4,20 @@ TARGET=punch
 
 .PHONY: all clean
 
-# TODO: clean up this makefile
-
 all: $(TARGET)
 
 clean:
 	rm -f *.o
 	rm -f $(TARGET)
 
-PunchException.o: PunchException.cpp PunchException.h
+%.o: %.cpp %.h
 	$(CC) -c $(CPPFLAGS) $< -o $@
 
-Parser.o: Parser.cpp Parser.h Token.h AstNode.h AstProgram.h AstStatement.h
-	$(CC) -c $(CPPFLAGS) $< -o $@
+Parser.o: Token.h AstNode.h AstProgram.h AstStatement.h
 
-Scanner.o: Scanner.cpp Scanner.h Token.h
-	$(CC) -c $(CPPFLAGS) $< -o $@
+Scanner.o: Token.h
 
-main.o: main.cpp Scanner.h Parser.h Token.h
-	$(CC) -c $(CPPFLAGS) $< -o $@
+main.o: Scanner.h Parser.h Token.h
 
 punch: main.o Scanner.o Parser.o PunchException.o
 	$(CC) $(CPPFLAGS) $^ -o $@

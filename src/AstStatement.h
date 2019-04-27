@@ -56,9 +56,7 @@ public:
                     std::vector<std::unique_ptr<AstExpression>> arguments)
         : name(name), arguments(std::move(arguments)) {}
 
-    std::string getName() const {
-        return name;
-    }
+    std::string getName() const { return name; }
 
     std::vector<AstExpression*> getArguments() const {
         return Tools::toPtrVector(arguments);

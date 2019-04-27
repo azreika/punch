@@ -29,8 +29,6 @@ public:
         }
     }
 
-    // TODO: helper function for unique_ptr to pointer
-
     std::vector<AstAssignment*> getAssignments() const {
         return Tools::toPtrVector(assignments);
     }

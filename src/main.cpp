@@ -1,7 +1,7 @@
 #include "Parser.h"
 #include "Scanner.h"
-#include "Translator.h"
 #include "Token.h"
+#include "Translator.h"
 
 #include <fstream>
 #include <iostream>
