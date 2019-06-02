@@ -33,20 +33,21 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    // first argument: input filename
-    std::string inFilename = argv[1];
-
-    // second argument: (optional) output filename
-    std::string outFilename = (argc == 3) ? argv[2] : "a.out.sh";
-
     // compile the program
+    std::string inFilename = argv[1];
     std::stringstream result;
     compileProgram(inFilename, result);
 
-    // write the program to the output file and stdout
-    std::ofstream outFile(outFilename);
-    outFile << result.str();
-    std::cout << result.str();
+    // decide where to write the result
+    if (argc == 3) {
+        // write to file
+        std::string outFilename = argv[2];
+        std::ofstream outFile(outFilename);
+        outFile << result.str();
+    } else {
+        // write to stdout
+        std::cout << result.str();
+    }
 
     return 0;
 }
