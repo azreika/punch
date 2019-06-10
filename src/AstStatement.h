@@ -52,6 +52,8 @@ private:
 
 class AstFunctionCall : public AstExpression {
 public:
+    AstFunctionCall(std::string name) : name(name), args({}) {}
+
     AstFunctionCall(std::string name,
                     std::vector<std::unique_ptr<AstExpression>> args)
         : name(name), args(std::move(args)) {}

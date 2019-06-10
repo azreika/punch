@@ -177,8 +177,19 @@ AstExpression* Parser::parseFactor() {
     if (next.type == TokenType::NUMBER) {
         return new AstNumberLiteral(next.getNumberLiteral());
     } else if (next.type == TokenType::IDENT) {
-        if (peek().type == TokenType::LPAREN) {
-            assert(false && "unimplemented");
+        if (match(TokenType::LPAREN)) {
+            AstFunctionCall* call = new AstFunctionCall(next.getStringLiteral());
+            if (!match(TokenType::RPAREN)) {
+                do {
+                    AstExpression* arg = parseExpression();
+                    call->addArgument(std::unique_ptr<AstExpression>(arg));
+                } while (match(TokenType::COMMA));
+
+                if (!match(TokenType::RPAREN)) {
+                    generateError(advance(), {TokenType::RPAREN});
+                }
+            }
+            return call;
         } else {
             return new AstVariable(next.getStringLiteral());
         }
