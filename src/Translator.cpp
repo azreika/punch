@@ -38,6 +38,18 @@ void Translator::visitFunctionDecl(const AstFunctionDecl* function) {
     os << "}" << std::endl;
 }
 
+void Translator::visitFunctionCall(const AstFunctionCall* call) {
+    std::string bID = getBashIdentifier(call->getName());
+    os << "$(" << bID;
+    if (!call->getArguments().empty()) {
+        for (const auto* arg : call->getArguments()) {
+            os << " ";
+            visit(arg);
+        }
+    }
+    os << ")" << std::endl;
+}
+
 void Translator::visitAssignment(const AstAssignment* assignment) {
     std::string pID = assignment->getVariable()->getName();
     std::string bID = getBashIdentifier(pID);

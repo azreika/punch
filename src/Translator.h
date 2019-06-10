@@ -15,6 +15,7 @@ public:
 protected:
     void visitProgram(const AstProgram*) override;
     void visitFunctionDecl(const AstFunctionDecl*) override;
+    void visitFunctionCall(const AstFunctionCall*) override;
     void visitAssignment(const AstAssignment*) override;
     void visitVariable(const AstVariable*) override;
     void visitNumberLiteral(const AstNumberLiteral*) override;
