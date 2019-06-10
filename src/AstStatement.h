@@ -53,18 +53,38 @@ private:
 class AstFunctionCall : public AstExpression {
 public:
     AstFunctionCall(std::string name,
-                    std::vector<std::unique_ptr<AstExpression>> arguments)
-        : name(name), arguments(std::move(arguments)) {}
+                    std::vector<std::unique_ptr<AstExpression>> args)
+        : name(name), args(std::move(args)) {}
 
     std::string getName() const { return name; }
 
     std::vector<AstExpression*> getArguments() const {
-        return Tools::toPtrVector(arguments);
+        return Tools::toPtrVector(args);
+    }
+
+    void addArgument(std::unique_ptr<AstExpression> expr) {
+        args.push_back(std::move(expr));
+    }
+
+    virtual void print(std::ostream& os) const {
+        os << name << "(";
+
+        if (args.empty()) {
+            os << "()";
+        } else {
+            os << "(";
+            os << *args[0];
+            for (size_t i = 0; i < args.size(); i++) {
+                os << ", ";
+                os << *args[i];
+            }
+            os << ")";
+        }
     }
 
 private:
     std::string name;
-    std::vector<std::unique_ptr<AstExpression>> arguments;
+    std::vector<std::unique_ptr<AstExpression>> args;
 };
 
 class AstBinaryExpression : public AstExpression {

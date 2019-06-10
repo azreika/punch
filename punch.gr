@@ -3,7 +3,7 @@ program
     ;
 
 funcdecl
-    : FUNC IDENT LPAREN arglist RPAREN LBRACE (stmt)* RBRACE
+    : FUNC IDENT LPAREN vararglist RPAREN LBRACE (stmt)* RBRACE
     ;
 
 stmt
@@ -57,7 +57,7 @@ factor
     | NUMBER
     | STRING
     | IDENT
-    | IDENT LPAREN arglist RPAREN
+    | IDENT LPAREN (expr COMMA)* RPAREN
     ;
 
 assignment
@@ -65,7 +65,7 @@ assignment
     | IDENT EQUALS expr
     ;
 
-arglist
+vararglist
     : (IDENT COMMA)* IDENT
     | %empty
     ;
