@@ -64,4 +64,21 @@ private:
         }
         return tabs.str();
     }
+
+    void indent() {
+        os << tabs();
+    }
+
+    void tabInc() {
+        tabLevel++;
+    }
+
+    void tabDec() {
+        tabLevel--;
+    }
+
+    void newLine() {
+        os << std::endl;
+        indent();
+    }
 };

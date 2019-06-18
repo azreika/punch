@@ -1,43 +1,48 @@
 #include "Translator.h"
 
-// TODO: make sure spacing is correct
-
 void Translator::visitProgram(const AstProgram* program) {
-    os << "#!/bin/bash" << std::endl;
-    os << std::endl;
+    os << "#!/bin/bash";
+    newLine();
+    newLine();
 
-    os << "# global variables" << std::endl;
+    os << "# global variables";
+    newLine();
+
     for (const auto* assignment : program->getAssignments()) {
         visitAssignment(assignment);
-        os << std::endl;
+        newLine();
     }
-    os << std::endl;
+    newLine();
 
-    os << "# functions" << std::endl;
+    os << "# functions";
+
+    newLine();
     for (const auto* function : program->getFunctions()) {
+        newLine();
         visit(function);
+        newLine();
     }
-    os << std::endl;
+    newLine();
 
-    os << "# start the program" << std::endl;
+    os << "# start the program";
+    newLine();
+
     os << getBashIdentifier("main");
-    os << std::endl;
+    newLine();
 }
 
 void Translator::visitFunctionDecl(const AstFunctionDecl* function) {
     std::string bID = getBashIdentifier(function->getName());
     os << bID << " ("
-       << ") {" << std::endl;
-
-    tabLevel += 1;
+       << ") {";
+    tabInc();
     for (const auto* stmt : function->getStatements()) {
-        os << tabs();
+        newLine();
         visit(stmt);
-        os << std::endl;
     }
-    tabLevel -= 1;
-
-    os << "}" << std::endl;
+    tabDec();
+    newLine();
+    os << "}";
 }
 
 void Translator::visitFunctionCall(const AstFunctionCall* call) {
@@ -49,7 +54,7 @@ void Translator::visitFunctionCall(const AstFunctionCall* call) {
             visit(arg);
         }
     }
-    os << ")" << std::endl;
+    os << ")";
 }
 
 void Translator::visitAssignment(const AstAssignment* assignment) {
@@ -108,16 +113,15 @@ void Translator::visitSimpleConditional(
     os << "if [";
     visit(conditional->getCondition());
     os << "]";
-    os << std::endl;
-
-    os << tabs();
+    newLine();
     os << "then";
 
-    tabLevel += 1;
+    tabInc();
+    newLine();
     visit(conditional->getIfBranch());
-    tabLevel -= 1;
+    tabDec();
 
-    os << tabs();
+    newLine();
     os << "fi";
 }
 
@@ -126,23 +130,22 @@ void Translator::visitBranchingConditional(
     os << "if [ ";
     visit(conditional->getCondition());
     os << " ]";
-    os << std::endl;
-
-    os << tabs();
+    newLine();
     os << "then";
-    os << std::endl;
 
-    tabLevel += 1;
+    tabInc();
+    newLine();
     visit(conditional->getIfBranch());
-    tabLevel -= 1;
+    tabDec();
 
-    os << tabs();
+    newLine();
     os << "else";
-    os << std::endl;
 
-    tabLevel += 1;
+    tabInc();
+    newLine();
     visit(conditional->getElseBranch());
-    tabLevel -= 1;
+    tabDec();
 
+    newLine();
     os << "fi";
 }
