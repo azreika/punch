@@ -178,7 +178,8 @@ AstExpression* Parser::parseFactor() {
         return new AstNumberLiteral(next.getNumberLiteral());
     } else if (next.type == TokenType::IDENT) {
         if (match(TokenType::LPAREN)) {
-            AstFunctionCall* call = new AstFunctionCall(next.getStringLiteral());
+            AstFunctionCall* call =
+                new AstFunctionCall(next.getStringLiteral());
             if (!match(TokenType::RPAREN)) {
                 do {
                     AstExpression* arg = parseExpression();

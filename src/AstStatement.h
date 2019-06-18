@@ -216,6 +216,56 @@ public:
     void print(std::ostream& os) const override { os << "false"; }
 };
 
+class AstConditional : public AstStatement {
+public:
+    AstConditional(std::unique_ptr<AstCondition> cond)
+        : cond(std::move(cond)) {}
+
+    AstCondition* getCondition() const { return cond.get(); }
+
+protected:
+    std::unique_ptr<AstCondition> cond;
+};
+
+class AstSimpleConditional : public AstConditional {
+public:
+    AstSimpleConditional(std::unique_ptr<AstCondition> cond,
+                         std::unique_ptr<AstStatement> ifStmt)
+        : AstConditional(std::move(cond)), ifStmt(std::move(ifStmt)) {}
+
+    void print(std::ostream& os) const override {
+        os << "if (";
+        cond->print(os);
+        os << ") ";
+        ifStmt->print(os);
+    }
+
+private:
+    std::unique_ptr<AstStatement> ifStmt;
+};
+
+class AstBranchingConditional : public AstConditional {
+public:
+    AstBranchingConditional(std::unique_ptr<AstCondition> cond,
+                            std::unique_ptr<AstStatement> ifStmt,
+                            std::unique_ptr<AstStatement> elseStmt)
+        : AstConditional(std::move(cond)), ifStmt(std::move(ifStmt)),
+          elseStmt(std::move(elseStmt)) {}
+
+    void print(std::ostream& os) const override {
+        os << "if (";
+        cond->print(os);
+        os << ") ";
+        ifStmt->print(os);
+        os << "else ";
+        elseStmt->print(os);
+    }
+
+private:
+    std::unique_ptr<AstStatement> ifStmt;
+    std::unique_ptr<AstStatement> elseStmt;
+};
+
 class AstReturn : public AstStatement {
 public:
     AstReturn(std::unique_ptr<AstExpression> expr) : expr(std::move(expr)) {}
