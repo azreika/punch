@@ -17,7 +17,7 @@ stmt
     ;
 
 conditional
-    : IF LPAREN condition RPAREN stmt (ELSE IF LPAREN condition RPAREN stmt)* (ELSE stmt)?
+    : IF LPAREN condition RPAREN stmt (ELSE stmt)?
     ;
 
 condition

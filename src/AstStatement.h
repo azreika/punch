@@ -197,6 +197,25 @@ private:
     std::vector<std::unique_ptr<AstRawExpression>> expressions;
 };
 
+class AstCondition : public AstNode {
+public:
+    AstCondition() {}
+};
+
+class AstTrue : public AstCondition {
+public:
+    AstTrue() : AstCondition() {}
+
+    void print(std::ostream& os) const override { os << "true"; }
+};
+
+class AstFalse : public AstCondition {
+public:
+    AstFalse() : AstCondition() {}
+
+    void print(std::ostream& os) const override { os << "false"; }
+};
+
 class AstReturn : public AstStatement {
 public:
     AstReturn(std::unique_ptr<AstExpression> expr) : expr(std::move(expr)) {}
