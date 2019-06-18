@@ -48,6 +48,8 @@ enum class TokenType {
     NUMBER,
     STRING,
     RAWEXPR,
+    TRUEVAL,
+    FALSEVAL,
 
     // EOF
     END,
@@ -97,6 +99,8 @@ inline std::string getSymbolForTokenType(TokenType type) {
         case TokenType::NUMBER: return "NUMBER";
         case TokenType::STRING: return "STRING";
         case TokenType::RAWEXPR: return "RAWEXPR";
+        case TokenType::TRUEVAL: return "TRUE";
+        case TokenType::FALSEVAL: return "FALSE";
 
         // EOF
         case TokenType::END: return "EOF";
