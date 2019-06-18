@@ -111,9 +111,9 @@ void Translator::visitFalse(const AstFalse* val) { os << "false"; }
 
 void Translator::visitSimpleConditional(
     const AstSimpleConditional* conditional) {
-    os << "if [";
+    os << "if $(";
     visit(conditional->getCondition());
-    os << "]";
+    os << ")";
     newLine();
     os << "then";
 
@@ -128,9 +128,9 @@ void Translator::visitSimpleConditional(
 
 void Translator::visitBranchingConditional(
     const AstBranchingConditional* conditional) {
-    os << "if [ ";
+    os << "if $(";
     visit(conditional->getCondition());
-    os << " ]";
+    os << ")";
     newLine();
     os << "then";
 
