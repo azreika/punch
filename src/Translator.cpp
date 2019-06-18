@@ -5,24 +5,25 @@ void Translator::visitProgram(const AstProgram* program) {
     newLine();
     newLine();
 
-    os << "# global variables";
-    newLine();
-
-    for (const auto* assignment : program->getAssignments()) {
-        visitAssignment(assignment);
+    if (!program->getAssignments().empty()) {
+        os << "# global variables";
+        newLine();
+        for (const auto* assignment : program->getAssignments()) {
+            visitAssignment(assignment);
+            newLine();
+        }
         newLine();
     }
-    newLine();
 
-    os << "# functions";
-
-    newLine();
-    for (const auto* function : program->getFunctions()) {
+    if (!program->getFunctions().empty()) {
+        os << "# functions";
         newLine();
-        visit(function);
-        newLine();
+        for (const auto* function : program->getFunctions()) {
+            visit(function);
+            newLine();
+            newLine();
+        }
     }
-    newLine();
 
     os << "# start the program";
     newLine();
