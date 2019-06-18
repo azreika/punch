@@ -207,8 +207,8 @@ AstStatement* Parser::parseStatement() {
         assert(false && "unimplemented");
     } else if (match(TokenType::WHILE)) {
         assert(false && "unimplemented");
-    } else if (match(TokenType::IF)) {
-        assert(false && "unimplemented");
+    } else if (peek().type == TokenType::IF) {
+        return parseConditional();
     } else if (match(TokenType::LBRACE)) {
         assert(false && "unimplemented");
     } else if (match(TokenType::RETURN)) {
@@ -236,6 +236,42 @@ AstStatement* Parser::parseStatement() {
             assert(false && "expected ';'");
         }
         return expr;
+    }
+}
+
+AstConditional* Parser::parseConditional() {
+    if (!match(TokenType::IF)) {
+        assert(false && "expected 'if'");
+    }
+
+    if (!match(TokenType::LPAREN)) {
+        assert(false && "expected '('");
+    }
+
+    auto cond = std::unique_ptr<AstCondition>(parseCondition());
+
+    if (!match(TokenType::RPAREN)) {
+        assert(false && "expected ')'");
+    }
+
+    auto ifStmt = std::unique_ptr<AstStatement>(parseStatement());
+
+    if (match(TokenType::ELSE)) {
+        auto elseStmt = std::unique_ptr<AstStatement>(parseStatement());
+        return new AstBranchingConditional(std::move(cond), std::move(ifStmt),
+                                           std::move(elseStmt));
+    } else {
+        return new AstSimpleConditional(std::move(cond), std::move(ifStmt));
+    }
+}
+
+AstCondition* Parser::parseCondition() {
+    if (match(TokenType::TRUEVAL)) {
+        return new AstTrue();
+    } else if (match(TokenType::FALSEVAL)) {
+        return new AstFalse();
+    } else {
+        assert(false && "expected 'true' or 'false'");
     }
 }
 

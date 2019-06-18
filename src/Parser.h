@@ -51,6 +51,10 @@ private:
 
     AstStatement* parseStatement();
 
+    AstConditional* parseConditional();
+
+    AstCondition* parseCondition();
+
     AstRawEnvironment* parseRawEnvironment();
 
     // TODO: clean up error generation
