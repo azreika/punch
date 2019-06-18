@@ -29,6 +29,10 @@ public:
         LEAF(RawPunchExpression);
         LEAF(RawEnvironment);
         LEAF(Return);
+        LEAF(SimpleConditional);
+        LEAF(BranchingConditional);
+        LEAF(True);
+        LEAF(False);
 
 #undef LEAF
 
@@ -60,6 +64,12 @@ protected:
     CHILD(RawPunchExpression, RawExpression);
     CHILD(RawEnvironment, Expression);
     CHILD(Return, Statement);
+    CHILD(Conditional, Statement);
+    CHILD(SimpleConditional, Conditional);
+    CHILD(BranchingConditional, Conditional);
+    CHILD(Condition, Node);
+    CHILD(True, Condition);
+    CHILD(False, Condition);
 
 #undef CHILD
 };
