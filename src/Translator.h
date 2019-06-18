@@ -25,6 +25,10 @@ protected:
     void visitRawBashExpression(const AstRawBashExpression*) override;
     void visitRawPunchExpression(const AstRawPunchExpression*) override;
     void visitRawEnvironment(const AstRawEnvironment*) override;
+    void visitTrue(const AstTrue*) override;
+    void visitFalse(const AstFalse*) override;
+    void visitSimpleConditional(const AstSimpleConditional*) override;
+    void visitBranchingConditional(const AstBranchingConditional*) override;
 
 private:
     std::ostream& os;

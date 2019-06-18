@@ -1,5 +1,7 @@
 #include "Translator.h"
 
+// TODO: make sure spacing is correct
+
 void Translator::visitProgram(const AstProgram* program) {
     os << "#!/bin/bash" << std::endl;
     os << std::endl;
@@ -95,4 +97,52 @@ void Translator::visitRawEnvironment(const AstRawEnvironment* env) {
     for (auto* expr : env->getExpressions()) {
         visit(expr);
     }
+}
+
+void Translator::visitTrue(const AstTrue* val) { os << "true"; }
+
+void Translator::visitFalse(const AstFalse* val) { os << "false"; }
+
+void Translator::visitSimpleConditional(
+    const AstSimpleConditional* conditional) {
+    os << "if [";
+    visit(conditional->getCondition());
+    os << "]";
+    os << std::endl;
+
+    os << tabs();
+    os << "then";
+
+    tabLevel += 1;
+    visit(conditional->getIfBranch());
+    tabLevel -= 1;
+
+    os << tabs();
+    os << "fi";
+}
+
+void Translator::visitBranchingConditional(
+    const AstBranchingConditional* conditional) {
+    os << "if [ ";
+    visit(conditional->getCondition());
+    os << " ]";
+    os << std::endl;
+
+    os << tabs();
+    os << "then";
+    os << std::endl;
+
+    tabLevel += 1;
+    visit(conditional->getIfBranch());
+    tabLevel -= 1;
+
+    os << tabs();
+    os << "else";
+    os << std::endl;
+
+    tabLevel += 1;
+    visit(conditional->getElseBranch());
+    tabLevel -= 1;
+
+    os << "fi";
 }

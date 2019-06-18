@@ -233,6 +233,10 @@ public:
                          std::unique_ptr<AstStatement> ifStmt)
         : AstConditional(std::move(cond)), ifStmt(std::move(ifStmt)) {}
 
+    AstStatement* getIfBranch() const {
+        return ifStmt.get();
+    }
+
     void print(std::ostream& os) const override {
         os << "if (";
         cond->print(os);
@@ -251,6 +255,14 @@ public:
                             std::unique_ptr<AstStatement> elseStmt)
         : AstConditional(std::move(cond)), ifStmt(std::move(ifStmt)),
           elseStmt(std::move(elseStmt)) {}
+
+    AstStatement* getIfBranch() const {
+        return ifStmt.get();
+    }
+
+    AstStatement* getElseBranch() const {
+        return elseStmt.get();
+    }
 
     void print(std::ostream& os) const override {
         os << "if (";
