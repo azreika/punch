@@ -140,13 +140,17 @@ void Translator::visitBranchingConditional(
     tabDec();
 
     newLine();
-    os << "else";
-
-    tabInc();
-    newLine();
-    visit(conditional->getElseBranch());
-    tabDec();
-
-    newLine();
-    os << "fi";
+    const auto* elseBranch = conditional->getElseBranch();
+    if (dynamic_cast<const AstConditional*>(elseBranch) != nullptr) {
+        os << "el";
+        visit(elseBranch);
+    } else {
+        os << "else";
+        tabInc();
+        newLine();
+        visit(elseBranch);
+        tabDec();
+        newLine();
+        os << "fi";
+    }
 }
