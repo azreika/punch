@@ -9,6 +9,31 @@
 
 class AstStatement : public AstNode {};
 
+class AstStatementBlock : public AstStatement {
+public:
+    AstStatementBlock() = default;
+
+    void appendStatement(std::unique_ptr<AstStatement> stmt) {
+        stmts.push_back(std::move(stmt));
+    }
+
+    std::vector<AstStatement*> getStatements() const {
+        return Tools::toPtrVector(stmts);
+    }
+
+    void print(std::ostream& os) const override {
+        os << "{" << std::endl;
+        for (const auto& stmt : stmts) {
+            stmt->print(os);
+            os << std::endl;
+        }
+        os << "}";
+    }
+
+private:
+    std::vector<std::unique_ptr<AstStatement>> stmts;
+};
+
 class AstExpression : public AstStatement {};
 
 class AstVariable : public AstExpression {

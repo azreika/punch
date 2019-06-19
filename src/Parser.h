@@ -51,6 +51,8 @@ private:
 
     AstStatement* parseStatement();
 
+    AstStatementBlock* parseStatementBlock();
+
     AstConditional* parseConditional();
 
     AstCondition* parseCondition();

@@ -209,8 +209,8 @@ AstStatement* Parser::parseStatement() {
         assert(false && "unimplemented");
     } else if (peek().type == TokenType::IF) {
         return parseConditional();
-    } else if (match(TokenType::LBRACE)) {
-        assert(false && "unimplemented");
+    } else if (peek().type == TokenType::LBRACE) {
+        return parseStatementBlock();
     } else if (match(TokenType::RETURN)) {
         auto expr = std::unique_ptr<AstExpression>(parseExpression());
         AstReturn* result = new AstReturn(std::move(expr));
@@ -237,6 +237,20 @@ AstStatement* Parser::parseStatement() {
         }
         return expr;
     }
+}
+
+AstStatementBlock* Parser::parseStatementBlock() {
+    if (!match(TokenType::LBRACE)) {
+        assert(false && "expected '{'");
+    }
+
+    auto* stmtBlock = new AstStatementBlock();
+    while (!match(TokenType::RBRACE)) {
+        auto stmt = std::unique_ptr<AstStatement>(parseStatement());
+        stmtBlock->appendStatement(std::move(stmt));
+    }
+
+    return stmtBlock;
 }
 
 AstConditional* Parser::parseConditional() {
