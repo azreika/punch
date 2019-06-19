@@ -34,13 +34,22 @@ void Translator::visitProgram(const AstProgram* program) {
 
 void Translator::visitFunctionDecl(const AstFunctionDecl* function) {
     std::string bID = getBashIdentifier(function->getName());
-    os << bID << " ("
-       << ") {";
+    os << bID << " () {";
+
     tabInc();
+
+    size_t argCount = 0;
+    for (const auto* arg : function->getArguments()) {
+        newLine();
+        std::string argID = getBashIdentifier(arg->getName());
+        os << argID << "=$" << ++argCount;
+    }
+
     for (const auto* stmt : function->getStatements()) {
         newLine();
         visit(stmt);
     }
+
     tabDec();
     newLine();
     os << "}";
