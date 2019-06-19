@@ -56,15 +56,28 @@ void Translator::visitFunctionDecl(const AstFunctionDecl* function) {
 }
 
 void Translator::visitFunctionCall(const AstFunctionCall* call) {
-    std::string bID = getBashIdentifier(call->getName());
-    os << "$(" << bID;
-    if (!call->getArguments().empty()) {
-        for (const auto* arg : call->getArguments()) {
-            os << " ";
+    std::string functionID = getBashIdentifier(call->getName());
+
+    std::vector<std::string> arguments;
+    for (const auto* arg : call->getArguments()) {
+        std::string argVar = generateVariable();
+        arguments.push_back(argVar);
+
+        if (dynamic_cast<const AstFunctionCall*>(arg) != nullptr) {
+            visit(arg);
+            newLine();
+            os << argVar << "=$__return";
+        } else {
+            os << argVar << "=";
             visit(arg);
         }
+        newLine();
     }
-    os << ")";
+
+    os << functionID;
+    for (const auto& arg : arguments) {
+        os << " $" << arg;
+    }
 }
 
 void Translator::visitAssignment(const AstAssignment* assignment) {
@@ -96,8 +109,15 @@ void Translator::visitBinaryExpression(const AstBinaryExpression* expr) {
 }
 
 void Translator::visitReturn(const AstReturn* ret) {
-    os << "echo ";
-    visit(ret->getExpression());
+    const auto* expr = ret->getExpression();
+    if (dynamic_cast<const AstFunctionCall*>(expr) != nullptr) {
+        visit(expr);
+    } else {
+        os << "__return=";
+        visit(ret->getExpression());
+    }
+    newLine();
+    os << "return 0";
 }
 
 void Translator::visitRawBashExpression(const AstRawBashExpression* raw) {

@@ -58,6 +58,13 @@ private:
         return name.str();
     }
 
+    static std::string generateVariable() {
+        static size_t count = 0;
+        std::stringstream name;
+        name << "_internal_" << count++;
+        return name.str();
+    }
+
     std::string tabs() const {
         std::stringstream tabs;
         for (size_t i = 0; i < tabLevel; i++) {
