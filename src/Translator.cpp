@@ -154,3 +154,17 @@ void Translator::visitBranchingConditional(
         os << "fi";
     }
 }
+
+void Translator::visitStatementBlock(const AstStatementBlock* stmtBlock) {
+    os << "{";
+
+    tabInc();
+    for (const auto* stmt : stmtBlock->getStatements()) {
+        newLine();
+        visit(stmt);
+    }
+    tabDec();
+    newLine();
+
+    os << "}";
+}

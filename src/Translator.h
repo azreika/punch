@@ -29,6 +29,7 @@ protected:
     void visitFalse(const AstFalse*) override;
     void visitSimpleConditional(const AstSimpleConditional*) override;
     void visitBranchingConditional(const AstBranchingConditional*) override;
+    void visitStatementBlock(const AstStatementBlock*) override;
 
 private:
     std::ostream& os;

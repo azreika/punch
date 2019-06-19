@@ -33,6 +33,7 @@ public:
         LEAF(BranchingConditional);
         LEAF(True);
         LEAF(False);
+        LEAF(StatementBlock);
 
 #undef LEAF
 
@@ -70,6 +71,7 @@ protected:
     CHILD(Condition, Node);
     CHILD(True, Condition);
     CHILD(False, Condition);
+    CHILD(StatementBlock, Statement);
 
 #undef CHILD
 };
