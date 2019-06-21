@@ -280,12 +280,33 @@ AstConditional* Parser::parseConditional() {
 }
 
 AstCondition* Parser::parseCondition() {
+    // TODO: maybe make conditions expressions?
     if (match(TokenType::TRUEVAL)) {
         return new AstTrue();
     } else if (match(TokenType::FALSEVAL)) {
         return new AstFalse();
+    } else if (match(TokenType::LNOT)) {
+        assert(false && "unimplemented");
+    } else if (match(TokenType::LPAREN)) {
+        auto* cond = parseCondition();
+        if (!match(TokenType::RPAREN)) {
+            assert(false && "expected ')'");
+        }
+        return cond;
     } else {
-        assert(false && "expected 'true' or 'false'");
+        auto lhs = std::unique_ptr<AstExpression>(parseExpression());
+        std::string op;
+        switch (advance().type) {
+            case TokenType::LEQ: op = "<="; break;
+            case TokenType::GEQ: op = ">="; break;
+            case TokenType::EQUALEQUAL: op = "=="; break;
+            case TokenType::LESSTHAN: op = "<"; break;
+            case TokenType::GREATERTHAN: op = ">"; break;
+            default: assert(false && "unexpected comparator");
+        }
+        auto rhs = std::unique_ptr<AstExpression>(parseExpression());
+
+        return new AstBinaryComparison(op, std::move(lhs), std::move(rhs));
     }
 }
 

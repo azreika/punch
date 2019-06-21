@@ -29,9 +29,11 @@ conjunction
     ;
 
 unary
-    : LNOT conditional
-    | LPAREN conditional RPAREN
+    : LNOT condition
+    | LPAREN condition RPAREN
     | expr (LEQ | GEQ | EQUALEQUAL | LESSTHAN | GREATERTHAN) expr
+    | TRUE
+    | FALSE
     ;
 
 loop

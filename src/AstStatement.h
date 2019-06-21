@@ -229,7 +229,7 @@ public:
 
 class AstBinaryComparison : public AstCondition {
 public:
-    AstBinaryComparison(char op, std::unique_ptr<AstExpression> lhs, std::unique_ptr<AstExpression> rhs) : op(op), lhs(std::move(lhs)), rhs(std::move(rhs)) {}
+    AstBinaryComparison(std::string op, std::unique_ptr<AstExpression> lhs, std::unique_ptr<AstExpression> rhs) : op(op), lhs(std::move(lhs)), rhs(std::move(rhs)) {}
 
     void print(std::ostream& os) const override {
         os << "(";
@@ -239,7 +239,7 @@ public:
         os << ")";
     };
 private:
-    char op;
+    std::string op;
     std::unique_ptr<AstExpression> lhs;
     std::unique_ptr<AstExpression> rhs;
 };
