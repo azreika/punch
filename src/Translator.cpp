@@ -42,7 +42,7 @@ void Translator::visitFunctionDecl(const AstFunctionDecl* function) {
     for (const auto* arg : function->getArguments()) {
         newLine();
         std::string argID = getBashIdentifier(arg->getName());
-        os << argID << "=$" << ++argCount;
+        os << "local " << argID << "=$" << ++argCount;
     }
 
     for (const auto* stmt : function->getStatements()) {
@@ -83,8 +83,16 @@ void Translator::visitFunctionCall(const AstFunctionCall* call) {
 void Translator::visitAssignment(const AstAssignment* assignment) {
     std::string pID = assignment->getVariable()->getName();
     std::string bID = getBashIdentifier(pID);
-    os << bID << "=";
-    visit(assignment->getExpression());
+
+    const auto* expr = assignment->getExpression();
+    if (dynamic_cast<const AstFunctionCall*>(expr) != nullptr) {
+        visit(expr);
+        newLine();
+        os << "local " << bID << "=$__return";
+    } else {
+        os << "local " << bID << "=";
+        visit(assignment->getExpression());
+    }
 }
 
 void Translator::visitVariable(const AstVariable* variable) {
@@ -161,7 +169,7 @@ void Translator::visitBranchingConditional(
 
     const auto* cond = conditional->getCondition();
     if (dynamic_cast<const AstBinaryComparison*>(cond) != nullptr) {
-        os << "$(( ";
+        os << "(( ";
         visit(cond);
         os << " ))";
     } else {
