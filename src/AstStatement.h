@@ -227,16 +227,33 @@ public:
     AstCondition() {}
 };
 
+class AstBinaryComparison : public AstCondition {
+public:
+    AstBinaryComparison(char op, std::unique_ptr<AstExpression> lhs, std::unique_ptr<AstExpression> rhs) : op(op), lhs(std::move(lhs)), rhs(std::move(rhs)) {}
+
+    void print(std::ostream& os) const override {
+        os << "(";
+        lhs->print(os);
+        os << " " << op << " ";
+        rhs->print(os);
+        os << ")";
+    };
+private:
+    char op;
+    std::unique_ptr<AstExpression> lhs;
+    std::unique_ptr<AstExpression> rhs;
+};
+
 class AstTrue : public AstCondition {
 public:
-    AstTrue() : AstCondition() {}
+    AstTrue() {}
 
     void print(std::ostream& os) const override { os << "true"; }
 };
 
 class AstFalse : public AstCondition {
 public:
-    AstFalse() : AstCondition() {}
+    AstFalse() {}
 
     void print(std::ostream& os) const override { os << "false"; }
 };

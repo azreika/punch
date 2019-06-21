@@ -30,6 +30,7 @@ protected:
     void visitSimpleConditional(const AstSimpleConditional*) override;
     void visitBranchingConditional(const AstBranchingConditional*) override;
     void visitStatementBlock(const AstStatementBlock*) override;
+    void visitBinaryComparison(const AstBinaryComparison*) override;
 
 private:
     std::ostream& os;

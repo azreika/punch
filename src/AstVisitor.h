@@ -34,6 +34,7 @@ public:
         LEAF(True);
         LEAF(False);
         LEAF(StatementBlock);
+        LEAF(BinaryComparison);
 
 #undef LEAF
 
@@ -72,6 +73,7 @@ protected:
     CHILD(True, Condition);
     CHILD(False, Condition);
     CHILD(StatementBlock, Statement);
+    CHILD(BinaryComparison, Condition);
 
 #undef CHILD
 };
