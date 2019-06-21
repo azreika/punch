@@ -231,6 +231,18 @@ class AstBinaryComparison : public AstCondition {
 public:
     AstBinaryComparison(std::string op, std::unique_ptr<AstExpression> lhs, std::unique_ptr<AstExpression> rhs) : op(op), lhs(std::move(lhs)), rhs(std::move(rhs)) {}
 
+    AstExpression* getLHS() const {
+        return lhs.get();
+    }
+
+    AstExpression* getRHS() const {
+        return rhs.get();
+    }
+
+    std::string getOperator() const {
+        return op;
+    }
+
     void print(std::ostream& os) const override {
         os << "(";
         lhs->print(os);

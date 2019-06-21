@@ -157,9 +157,19 @@ void Translator::visitSimpleConditional(
 
 void Translator::visitBranchingConditional(
     const AstBranchingConditional* conditional) {
-    os << "if $(";
-    visit(conditional->getCondition());
-    os << ")";
+    os << "if ";
+
+    const auto* cond = conditional->getCondition();
+    if (dynamic_cast<const AstBinaryComparison*>(cond) != nullptr) {
+        os << "$(( ";
+        visit(cond);
+        os << " ))";
+    } else {
+        os << "$( ";
+        visit(cond);
+        os << " )";
+    }
+
     newLine();
     os << "then";
 
@@ -196,4 +206,13 @@ void Translator::visitStatementBlock(const AstStatementBlock* stmtBlock) {
     newLine();
 
     os << "}";
+}
+
+void Translator::visitBinaryComparison(const AstBinaryComparison* comp) {
+    // TODO: NOTE: assumes numbers at the moment
+    os << "(";
+    visit(comp->getLHS());
+    os << " " << comp->getOperator() << " ";
+    visit(comp->getRHS());
+    os << ")";
 }
