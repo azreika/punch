@@ -181,6 +181,8 @@ AstExpression* Parser::parseFactor() {
     Token next = advance();
     if (next.type == TokenType::NUMBER) {
         return new AstNumberLiteral(next.getNumberLiteral());
+    } else if (next.type == TokenType::STRING) {
+        return new AstStringLiteral(next.getStringLiteral());
     } else if (next.type == TokenType::IDENT) {
         if (match(TokenType::LPAREN)) {
             AstFunctionCall* call =
@@ -200,7 +202,6 @@ AstExpression* Parser::parseFactor() {
             return new AstVariable(next.getStringLiteral());
         }
     } else {
-        std::cout << next << std::endl;
         assert(false && "unimplemented");
     }
 }

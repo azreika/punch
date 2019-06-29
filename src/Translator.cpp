@@ -42,7 +42,7 @@ void Translator::visitFunctionDecl(const AstFunctionDecl* function) {
     for (const auto* arg : function->getArguments()) {
         newLine();
         std::string argID = getBashIdentifier(arg->getName());
-        os << "local " << argID << "=$" << ++argCount;
+        os << "local " << argID << "=\"$" << ++argCount << "\"";
     }
 
     for (const auto* stmt : function->getStatements()) {
@@ -66,7 +66,7 @@ void Translator::visitFunctionCall(const AstFunctionCall* call) {
         if (dynamic_cast<const AstFunctionCall*>(arg) != nullptr) {
             visit(arg);
             newLine();
-            os << argVar << "=$__return";
+            os << argVar << "=\"$__return\"";
         } else {
             os << argVar << "=";
             visit(arg);
@@ -76,7 +76,7 @@ void Translator::visitFunctionCall(const AstFunctionCall* call) {
 
     os << functionID;
     for (const auto& arg : arguments) {
-        os << " $" << arg;
+        os << " \"$" << arg << "\"";
     }
 }
 
@@ -88,7 +88,7 @@ void Translator::visitAssignment(const AstAssignment* assignment) {
     if (dynamic_cast<const AstFunctionCall*>(expr) != nullptr) {
         visit(expr);
         newLine();
-        os << "local " << bID << "=$__return";
+        os << "local " << bID << "=\"$__return\"";
     } else {
         os << "local " << bID << "=";
         visit(assignment->getExpression());
@@ -97,7 +97,7 @@ void Translator::visitAssignment(const AstAssignment* assignment) {
 
 void Translator::visitVariable(const AstVariable* variable) {
     std::string bID = getBashIdentifier(variable->getName());
-    os << "$" << bID;
+    os << "\"$" << bID << "\"";
 }
 
 void Translator::visitNumberLiteral(const AstNumberLiteral* lit) {
@@ -105,7 +105,7 @@ void Translator::visitNumberLiteral(const AstNumberLiteral* lit) {
 }
 
 void Translator::visitStringLiteral(const AstStringLiteral* lit) {
-    os << lit->getString();
+    os << "\"" << lit->getString() << "\"";
 }
 
 void Translator::visitBinaryExpression(const AstBinaryExpression* expr) {

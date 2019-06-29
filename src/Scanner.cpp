@@ -107,7 +107,7 @@ void Scanner::scanString() {
 
     // the string is everything except the surrounding '"' characters
     std::string result =
-        source.substr(currTokenStart + 1, idx - currTokenStart - 1);
+        source.substr(currTokenStart + 1, idx - currTokenStart - 2);
     addToken(TokenType::STRING, result);
 }
 
