@@ -256,6 +256,40 @@ private:
     std::unique_ptr<AstExpression> rhs;
 };
 
+class AstConjunction : public AstCondition {
+public:
+    AstConjunction(std::unique_ptr<AstCondition> lhs, std::unique_ptr<AstCondition> rhs) : lhs(std::move(lhs)), rhs(std::move(rhs)) {}
+
+    void print(std::ostream& os) const override {
+        os << "(";
+        lhs->print(os);
+        os << " && ";
+        rhs->print(os);
+        os << ")";
+    }
+
+private:
+    std::unique_ptr<AstCondition> lhs;
+    std::unique_ptr<AstCondition> rhs;
+};
+
+class AstDisjunction : public AstCondition {
+public:
+    AstDisjunction(std::unique_ptr<AstCondition> lhs, std::unique_ptr<AstCondition> rhs) : lhs(std::move(lhs)), rhs(std::move(rhs)) {}
+
+    void print(std::ostream& os) const override {
+        os << "(";
+        lhs->print(os);
+        os << " || ";
+        rhs->print(os);
+        os << ")";
+    }
+
+private:
+    std::unique_ptr<AstCondition> lhs;
+    std::unique_ptr<AstCondition> rhs;
+};
+
 class AstTrue : public AstCondition {
 public:
     AstTrue() {}
