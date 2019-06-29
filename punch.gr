@@ -50,7 +50,7 @@ bash
     : RAWEXPR (DOLLAR LBRACKET expr RBRACKET (RAWEXPR)*)*
 
 term
-    : factor ((STAR | SLASH) factor)*
+    : factor ((STAR | SLASH | PERCENT) factor)*
     ;
 
 factor

@@ -22,6 +22,7 @@ void Scanner::scanToken() {
         case '+': addToken(TokenType::PLUS); break;
         case '-': addToken(TokenType::MINUS); break;
         case '*': addToken(TokenType::STAR); break;
+        case '%': addToken(TokenType::PERCENT); break;
         case '[': addToken(TokenType::LBRACKET); break;
         case ']': addToken(TokenType::RBRACKET); break;
         case ',': addToken(TokenType::COMMA); break;

@@ -36,6 +36,7 @@ enum class TokenType {
     MINUS,
     STAR,
     SLASH,
+    PERCENT,
     LEQ,
     GEQ,
     EQUALEQUAL,
@@ -87,6 +88,7 @@ inline std::string getSymbolForTokenType(TokenType type) {
         case TokenType::MINUS: return "-";
         case TokenType::STAR: return "*";
         case TokenType::SLASH: return "/";
+        case TokenType::PERCENT: return "%";
         case TokenType::LEQ: return "<=";
         case TokenType::GEQ: return ">=";
         case TokenType::EQUALEQUAL: return "==";
