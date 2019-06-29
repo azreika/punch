@@ -26,6 +26,7 @@ void Scanner::scanToken() {
         case '[': addToken(TokenType::LBRACKET); break;
         case ']': addToken(TokenType::RBRACKET); break;
         case ',': addToken(TokenType::COMMA); break;
+        case '~': addToken(TokenType::BNOT); break;
 
         // possibly multi-character simple tokens
         case '=': {
@@ -60,6 +61,24 @@ void Scanner::scanToken() {
                 addToken(TokenType::NOTEQUAL);
             } else {
                 addToken(TokenType::LNOT);
+            }
+            break;
+        }
+
+        case '|': {
+            if (match('|')) {
+                addToken(TokenType::LOR);
+            } else {
+                addToken(TokenType::BOR);
+            }
+            break;
+        }
+
+        case '&': {
+            if (match('&')) {
+                addToken(TokenType::LAND);
+            } else {
+                addToken(TokenType::BAND);
             }
             break;
         }

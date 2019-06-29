@@ -32,6 +32,9 @@ enum class TokenType {
     LOR,
     LAND,
     LNOT,
+    BOR,
+    BAND,
+    BNOT,
     PLUS,
     MINUS,
     STAR,
@@ -84,6 +87,9 @@ inline std::string getSymbolForTokenType(TokenType type) {
         case TokenType::LOR: return "||";
         case TokenType::LAND: return "&&";
         case TokenType::LNOT: return "!";
+        case TokenType::BOR: return "|";
+        case TokenType::BAND: return "&";
+        case TokenType::BNOT: return "~";
         case TokenType::PLUS: return "+";
         case TokenType::MINUS: return "-";
         case TokenType::STAR: return "*";
