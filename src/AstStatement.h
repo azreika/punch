@@ -77,7 +77,7 @@ private:
 
 class AstFunctionCall : public AstExpression {
 public:
-    AstFunctionCall(std::string name) : name(name), args({}) {}
+    AstFunctionCall(std::string name) : name(name) {}
 
     AstFunctionCall(std::string name,
                     std::vector<std::unique_ptr<AstExpression>> args)
@@ -196,7 +196,7 @@ private:
 
 class AstRawEnvironment : public AstExpression {
 public:
-    AstRawEnvironment() : expressions({}) {}
+    AstRawEnvironment() {}
 
     AstRawEnvironment(
         std::vector<std::unique_ptr<AstRawExpression>> expressions)

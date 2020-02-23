@@ -8,7 +8,7 @@
 
 class AstFunctionDecl : public AstNode {
 public:
-    AstFunctionDecl(std::string name) : name(name), args({}), stmts({}) {}
+    AstFunctionDecl(std::string name) : name(name) {}
 
     AstFunctionDecl(std::string name,
                     std::vector<std::unique_ptr<AstVariable>> args,
